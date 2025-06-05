@@ -316,7 +316,6 @@ function givePowers(){
 
     let powers = ["remove_block", "random_coin", 'time_increase', 'time_decrease']
     let power = powers[Math.floor(Math.random() * powers.length)];
-    power = "random_coin";
 
     if (turn === yellow) {
         powersYellow.innerText = `You got ${power}.`;
@@ -339,6 +338,7 @@ function givePowers(){
                 randomColumn = randomColumns[Math.floor(Math.random() * randomColumns.length)]
             }
             onMouseClick(randomColumn, true);
+            turnSwap();
             break;
 
         case "time_increase":
@@ -492,7 +492,6 @@ undo.addEventListener('click', () => {
 
             move.style.border = "solid 0.2rem";
             placeBlock(columnBlocks[columnBlocks.length - 1]);
-
         }
 
         else if (!isBlocked) {
@@ -502,11 +501,10 @@ undo.addEventListener('click', () => {
 
             move.style.border = "solid 0.2rem";
             placeBlock(columnBlocks[columnBlocks.length - 1]);
-
         }
 
 
-        else if (isBlocked && lastPowers[lastPowers.length - 1] === "random_coin" && turn === red) {
+        else if (isBlocked && lastPowers[lastPowers.length - 1] === "random_coin" && turn === yellow) {
             lastPowers.pop();
 
             let move = document.getElementById(yellowMoves.pop());
@@ -516,7 +514,7 @@ undo.addEventListener('click', () => {
             removeBlock(columnBlocks.pop());
             columnBlocked = null;
             isBlocked = false;
-
+            turnSwap();
         }
 
         else if (isBlocked && lastPowers[lastPowers.length - 1] === "random_coin") {
@@ -529,7 +527,7 @@ undo.addEventListener('click', () => {
             removeBlock(columnBlocks.pop());
             columnBlocked = null;
             isBlocked = false;
-
+            turnSwap();
         }
 
         else if (isBlocked && turn === red) {
