@@ -10,7 +10,8 @@ html {
 }
 
 main {
-    background: linear-gradient(rgb(251, 158, 58), #FFF, rgb(251, 158, 58));
+    background-color: rgb(251, 158, 58);
+    transition: background-color 0.5s ease-in;
 }
 
 span {
@@ -34,12 +35,13 @@ span {
     font-size: 1rem;
     justify-content: flex-end;
     border-bottom: black solid 0.05rem;
+    transition: background-color 0.5s ease-in;
 }
 
 .tools {
     background-color: inherit;
     height: 65%;
-    width: 7%;
+    width: 8%;
     font-size: 1rem;
     font-family: Georgia, serif;
     border-radius: 0.5rem;
@@ -72,7 +74,6 @@ span {
 }
 
 .actions:hover {
-    background-color: coral;
     color: white;
 }
 
@@ -83,7 +84,7 @@ span {
     height: 17vh;
 }
 
-.timers {
+.user-info {
     display: flex;
     height: 40%;
     width: 30%;
@@ -92,10 +93,13 @@ span {
     padding: 0 1rem 0 1rem;
     border-radius: 1rem;
     border: black solid 0.2em;
+    transition: background-color 0.5s ease-in;
 }
 
 .time {
+    background-color: inherit;
     width: 45%;
+    transition: background-color 0.5s ease-in;
 }
 
 #events {
@@ -105,6 +109,7 @@ span {
     text-align: center;
     border-radius: 1rem;
     border: black double 0.5em;
+    transition: background-color 0.5s ease-in;
 }
 
 #game {
@@ -122,6 +127,7 @@ span {
     grid-template-columns: repeat(7, 1fr);
     border-radius: 1rem;
     border: black solid 0.2em;
+    transition: background-color 0.5s ease-in;
 }
 
 .columns {
@@ -151,6 +157,7 @@ span {
     width: 20%;
     border-radius: 1rem;
     border: black solid 0.2em;
+    transition: background-color 0.5s ease-in;
 }
 
 .red {
@@ -170,7 +177,7 @@ span {
     margin: auto;
     width: 5%;
     height: 9%;
-    background-color: saddlebrown;
+    background-color: slategray;
     border-radius: 0.5rem;
     border: black solid 0.2rem;
     transition: width 1s ease-out,
@@ -180,12 +187,14 @@ span {
 
 #game-over span {
     width: 100%;
-    font-size: 120%;
+    font-size: 0.5rem;
+    transition: font-size 1s ease-out;
 }
 
 header,
 footer {
     background-color: rgb(75, 163, 163);
+    transition: background-color 0.5s ease-in;
 }
 
 footer {
