@@ -1,13 +1,13 @@
 // Document Object Model Manipulation
 
-let navbar = document.querySelector('#navbar');
-let main = document.querySelector('main');
-let board = document.querySelector('#board');
-let events = document.querySelector('#events');
-let footer = document.querySelector('footer');
+const navbar = document.querySelector('#navbar');
+const main = document.querySelector('main');
+const board = document.querySelector('#board');
+const events = document.querySelector('#events');
+const footer = document.querySelector('footer');
 
 // Board
-let columns = document.querySelectorAll('.columns');
+const columns = document.querySelectorAll('.columns');
 let rows;
 let moves = []
 for (let col = 1; col < 8; col++) {
@@ -17,8 +17,8 @@ for (let col = 1; col < 8; col++) {
 }
 
 // Timers
-let timerRed = document.querySelector('.time.red');
-let timerYellow = document.querySelector('.time.yellow');
+const timerRed = document.querySelector('.time.red');
+const timerYellow = document.querySelector('.time.yellow');
 
 // Players
 let red =  'rgb(234, 47, 20)';
@@ -27,13 +27,23 @@ let turn = red;
 let redMoves = [];
 let yellowMoves = [];
 
-//Tools and Actions
+// Tools and Actions
 let theme = "light";
-let changeTheme = document.querySelector('#theme');
-let undo = document.querySelector('#undo');
-let leaderboard = document.querySelector('#leaderboard');
-let gameOver = document.querySelector('#game-over');
-let gameOverText = document.querySelector('#game-over span');
+const changeTheme = document.querySelector('#theme');
+const undo = document.querySelector('#undo');
+const leaderboard = document.querySelector('#leaderboard');
+const gameOver = document.querySelector('#game-over');
+const gameOverText = document.querySelector('#game-over span');
+
+// Blocked
+let isBlocked = true;
+let columnBlocked;
+let lastColumnBlocked;
+
+// Powers
+let lastPower;
+const powersRed = document.querySelector('.powerups.red span');
+const powersYellow = document.querySelector('.powerups.yellow span');
 
 let winningMoves = []
 for (let col = 1; col < 5; col++) {
@@ -59,49 +69,27 @@ for (let col = 1; col < 5; col++) {
     }
 }
 
+// Theme
+let themeRowsColor = "";
+
 // Change Theme
 changeTheme.addEventListener('click', () => {
 
-    let rowButtons = document.querySelectorAll('.rows');
-    let redUserInfo = document.querySelectorAll('.red');
-    let yellowUserInfo = document.querySelectorAll('.yellow');
-
     if (theme === 'light') {
-        navbar.style.backgroundColor = 'teal';
-        footer.style.backgroundColor = 'teal';
-        board.style.backgroundColor = 'darkblue';
-        events.style.backgroundColor = 'rgb(70, 130, 150)';
-        main.style.backgroundColor = 'rgb(175, 110, 40)';
+        navbar.style.backgroundColor = 'rgb(0, 62, 64)';
+        footer.style.backgroundColor = 'rgb(0, 62, 64)';
+        board.style.backgroundColor = 'rgb(25, 25, 112)';
+        events.style.backgroundColor = 'rgb(38, 66, 139)';
+        main.style.backgroundColor = 'rgb(0, 139, 139)';
 
-        undo.style.backgroundColor = 'gray';
-        leaderboard.style.backgroundColor = 'gray';
+        themeRowsColor = "gray";
 
-        rowButtons.forEach(button => {
-            button.style.transition = 'background-color 0.5s ease-in, border 0.2s ease-in'
-            button.style.backgroundColor = 'gray';
+        red = 'rgb(178, 20, 20)';
+        yellow = 'rgb(189, 183, 107)';
+
+        document.querySelectorAll(".tools").forEach(tool => {
+            tool.style.color = 'white';
         })
-
-        red = 'rgb(139, 30, 15)';
-        yellow = 'rgb(180, 160, 50)';
-
-        redUserInfo.forEach(element => {
-            element.style.backgroundColor = red;
-        })
-
-        redMoves.forEach(move => {
-            move = document.querySelector(`#${move}`);
-            move.style.backgroundColor = red;
-        })
-
-        yellowMoves.forEach(move => {
-            move = document.querySelector(`#${move}`);
-            move.style.backgroundColor = yellow;
-        })
-
-        yellowUserInfo.forEach(element => {
-            element.style.backgroundColor = yellow;
-        })
-
 
         // Turn
         if(turn === 'rgb(234, 47, 20)') {
@@ -119,65 +107,76 @@ changeTheme.addEventListener('click', () => {
         footer.style.backgroundColor = 'rgb(75, 163, 163)';
         board.style.backgroundColor = 'cornflowerblue';
         events.style.backgroundColor = 'skyblue';
-        main.style.backgroundColor = 'rgb(251, 158, 58)';
+        main.style.backgroundColor = 'rgb(0, 223, 223)';
 
-        undo.style.backgroundColor = 'white';
-        leaderboard.style.backgroundColor = 'white';
-
-        rowButtons.forEach(button => {
-            button.style.transition = 'background-color 0.5s ease-in, border 0.2s ease-in'
-            button.style.backgroundColor = '';
-        })
+        themeRowsColor = "";
 
         red = 'rgb(234, 47, 20)';
         yellow = 'rgb(252, 242, 89)';
 
-        redUserInfo.forEach(element => {
-            element.style.backgroundColor = red;
+        document.querySelectorAll(".tools").forEach(tool => {
+            tool.style.color = 'black';
         })
-
-        redMoves.forEach(move => {
-            move = document.querySelector(`#${move}`);
-            move.style.backgroundColor = red;
-        })
-
-        yellowMoves.forEach(move => {
-            move = document.querySelector(`#${move}`);
-            move.style.backgroundColor = yellow;
-        })
-
-        yellowUserInfo.forEach(element => {
-            element.style.backgroundColor = yellow;
-        })
-
 
         // Turn
         if(turn === 'rgb(139, 30, 15)') {
-            turn = red;
+            turn = yellow;
         }
         else {
-            turn = yellow;
+            turn = red;
         }
 
         theme = "light";
     }
+
+    let rowButtons = document.querySelectorAll('.rows');
+    let redUserInfo = document.querySelectorAll('.red');
+    let yellowUserInfo = document.querySelectorAll('.yellow');
+
+    rowButtons.forEach(button => {
+        rowButtons.forEach(button => {
+            if(button.parentElement !== columnBlocked) {
+                button.style.transition = 'background-color 0.5s ease-in, border 0.2s ease-in'
+                button.style.backgroundColor = themeRowsColor;
+            }
+        })
+    })
+
+    redUserInfo.forEach(element => {
+        element.style.backgroundColor = red;
+    })
+
+    redMoves.forEach(move => {
+        move = document.querySelector(`#${move}`);
+        move.style.backgroundColor = red;
+    })
+
+    yellowMoves.forEach(move => {
+        move = document.querySelector(`#${move}`);
+        move.style.backgroundColor = yellow;
+    })
+
+    yellowUserInfo.forEach(element => {
+        element.style.backgroundColor = yellow;
+    })
+
 })
 
 // Hover over Column
 function onMouseEnter(column) {
-    rows = Array.from(column.children).reverse();
-    rows.some(row => {
-        row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
-        if (row.style.backgroundColor === "") {
-            row.style.backgroundColor = "darkgray";
-            return true;
-        }
-
-        else if (row.style.backgroundColor === "gray") {
-            row.style.backgroundColor = "white";
-            return true;
-        }
-    })
+    if (isBlocked) {
+        rows = Array.from(column.children).reverse();
+        rows.some(row => {
+            row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
+            if (row.style.backgroundColor === "") {
+                row.style.backgroundColor = "darkgray";
+                return true;
+            } else if (row.style.backgroundColor === "gray") {
+                row.style.backgroundColor = "white";
+                return true;
+            }
+        })
+    }
 }
 
 // Leave Column
@@ -198,28 +197,40 @@ function onMouseLeave(column) {
 }
 
 // Select Column
-function onMouseClick(column) {
+function onMouseClick(column, isPower) {
     rows = Array.from(column.children).reverse();
     rows.some(row => {
-        if (row.style.backgroundColor === "darkgray" || row.style.backgroundColor === "white") {
+        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
             row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
             row.style.backgroundColor = turn;
             row.style.border = "double 0.5rem";
 
             // Turn
             if (turn === red){
-                turn = yellow;
                 redMoves.push(row.id);
             }
             else{
-                turn = red;
                 yellowMoves.push(row.id);
             }
 
+            isBlocked = false;
             onMouseEnter(column);
             return true;
         }
     })
+
+    if (isPower) {
+        checkGameOver(true);
+        isBlocked = true;
+
+        if (turn === red) {
+            turn = yellow;
+        }
+
+        else {
+            turn = red;
+        }
+    }
 }
 
 function isGameOver(winner) {
@@ -240,27 +251,85 @@ function isGameOver(winner) {
 }
 
 // Check if Player has Won
-function checkGameOver() {
-    if (turn === yellow) {
+function checkGameOver(isPower = false) {
+    if (turn === red) {
         winningMoves.some(move => {
             if(move.every(pos => redMoves.includes(pos))){
-                isGameOver(1);
+                isGameOver(1)
                 return true;
             }
         });
+
+        turn = yellow;
     }
-    else if (turn === red) {
+    else if (turn === yellow) {
         winningMoves.some(move => {
             if(move.every(pos => yellowMoves.includes(pos))){
-                isGameOver(2);
+                isGameOver(2)
                 return true;
             }
         });
+        turn = red;
     }
 
     if(moves.every(move => redMoves.concat(yellowMoves).includes(move))){
         isGameOver(0);
     }
+}
+
+// Block
+function placeBlock(column) {
+    rows = Array.from(column.children).reverse();
+    rows.forEach(row => {
+        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+            row.style.backgroundColor = "black";
+        }
+    })
+
+}
+
+function removeBlock(column) {
+    try {
+        rows = Array.from(column.children).reverse();
+        rows.forEach(row => {
+            if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+                row.style.backgroundColor = themeRowsColor;
+            }
+        })
+    }
+    catch (error) {
+        console.log("No Column Blocked");
+    }
+}
+
+function givePowers(){
+    let powers = ["remove_block", "random_coin"]
+    let power = powers[Math.floor(Math.random() * powers.length)];
+
+    if (turn === yellow) {
+        powersYellow.innerText = `You got ${power}.`;
+    }
+
+    else {
+        powersRed.innerText = `You got ${power}.`;
+    }
+
+    switch(power){
+        case "remove_block":
+            removeBlock(columnBlocked);
+            columnBlocked = null;
+            break;
+
+        case "random_coin":
+            let randomColumns = Array.from(document.querySelectorAll('.columns'))
+            randomColumn = randomColumns[Math.floor(Math.random() * randomColumns.length)]
+            while (randomColumn === columnBlocked) {
+                randomColumn = randomColumns[Math.floor(Math.random() * randomColumns.length)]
+            }
+            onMouseClick(randomColumn, true);
+    }
+    return power;
+
 }
 
 // Game
@@ -270,10 +339,22 @@ columns.forEach(column => {
     });
     column.addEventListener('mouseleave', () => {
         onMouseLeave(column);
+
     })
     column.addEventListener('click', () => {
-        onMouseClick(column);
-        checkGameOver();
+        if (isBlocked && column !== columnBlocked) {
+            onMouseClick(column, false);
+            checkGameOver();
+            removeBlock(columnBlocked);
+            lastColumnBlocked = columnBlocked
+            columnBlocked = null;
+        }
+        else if (column !== columnBlocked){
+            placeBlock(column);
+            columnBlocked = column;
+            isBlocked = true;
+            lastPower = givePowers();
+        }
     })
 })
 
@@ -311,46 +392,69 @@ function timer(time){
 }
 
 undo.addEventListener('click', () => {
-    if (turn === red){
+    if (turn === red && !isBlocked){
         let move = document.getElementById(yellowMoves.pop());
-        if (theme === "light") {
-            move.style.backgroundColor = "";
-        }
-        else {
-            move.style.backgroundColor = "gray";
-        }
+        move.style.backgroundColor = themeRowsColor;
+
         move.style.border = "solid 0.2rem";
         turn = yellow;
+        placeBlock(lastColumnBlocked)
+        columnBlocked = lastColumnBlocked;
+        isBlocked = true;
     }
-    else {
+    else if (!isBlocked){
         let move = document.getElementById(redMoves.pop());
-        if (theme === "light") {
-            move.style.backgroundColor = "";
-        }
-        else {
-            move.style.backgroundColor = "gray";
-        }
+        move.style.backgroundColor = themeRowsColor;
+
         move.style.border = "solid 0.2rem";
         turn = red;
+        placeBlock(lastColumnBlocked)
+        columnBlocked = lastColumnBlocked
+        isBlocked = true;
+    }
+
+    else if (isBlocked && lastPower === "random_coin") {
+        let move = document.getElementById(yellowMoves.pop());
+        move.style.backgroundColor = themeRowsColor;
+
+        move.style.border = "solid 0.2rem";
+        removeBlock(columnBlocked);
+        lastColumnBlocked = columnBlocked
+        columnBlocked = null;
+        isBlocked = false;
+    }
+
+    else if (isBlocked){
+        let move = document.getElementById(yellowMoves.pop());
+        move.style.backgroundColor = themeRowsColor;
+
+        move.style.border = "solid 0.2rem";
+        removeBlock(columnBlocked);
+        lastColumnBlocked = columnBlocked
+        columnBlocked = null;
+        isBlocked = false;
     }
 });
 
-setInterval(() => {
-    if (turn === red) {
-        let curr_time = timerRed.innerText.slice(12);
-        curr_time = timer(curr_time);
-        timerRed.innerText = "Time Left : " + curr_time;
-    }
-    else if (turn === yellow) {
-        let curr_time = timerYellow.innerText.slice(12);
-        curr_time = timer(curr_time);
-        timerYellow.innerText = "Time Left : " + curr_time;
+// Timer and Actions
+setInterval((rerollPower = false) => {
+
+    if(!rerollPower) {
+        if (turn === red) {
+            let curr_time = timerRed.innerText.slice(12);
+            curr_time = timer(curr_time);
+            timerRed.innerText = "Time Left : " + curr_time;
+        } else if (turn === yellow) {
+            let curr_time = timerYellow.innerText.slice(12);
+            curr_time = timer(curr_time);
+            timerYellow.innerText = "Time Left : " + curr_time;
+        }
     }
 
     document.querySelectorAll(".actions").forEach(action => {
         if (action.matches(":hover")) {
             if(theme === "light") {
-                action.style.backgroundColor = "lightcoral";
+                action.style.backgroundColor = "rgb(244, 105, 0)";
             }
             else {
                 action.style.backgroundColor = "coral";
@@ -361,7 +465,7 @@ setInterval(() => {
                 action.style.backgroundColor = "white";
             }
             else {
-                action.style.backgroundColor = "gray";
+                action.style.backgroundColor = "rgb(159, 159, 159)";
             }
         }
     })
