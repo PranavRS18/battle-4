@@ -38,10 +38,10 @@ const gameOverText = document.querySelector('#game-over span');
 // Blocked
 let isBlocked = true;
 let columnBlocked;
-let lastColumnBlocked;
+let columnBlocks = [];
 
 // Powers
-let lastPower;
+let lastPowers = [];
 const powersRed = document.querySelector('.powerups.red span');
 const powersYellow = document.querySelector('.powerups.yellow span');
 
@@ -162,6 +162,15 @@ changeTheme.addEventListener('click', () => {
 
 })
 
+function turnSwap(){
+    if (turn === yellow) {
+        turn = red;
+    }
+    else {
+        turn = yellow
+    }
+}
+
 // Hover over Column
 function onMouseEnter(column) {
     if (isBlocked) {
@@ -259,8 +268,6 @@ function checkGameOver(isPower = false) {
                 return true;
             }
         });
-
-        turn = yellow;
     }
     else if (turn === yellow) {
         winningMoves.some(move => {
@@ -269,7 +276,6 @@ function checkGameOver(isPower = false) {
                 return true;
             }
         });
-        turn = red;
     }
 
     if(moves.every(move => redMoves.concat(yellowMoves).includes(move))){
@@ -303,8 +309,14 @@ function removeBlock(column) {
 }
 
 function givePowers(){
-    let powers = ["remove_block", "random_coin"]
+    let currentTime;
+    let minutes;
+    let seconds;
+    let deciseconds;
+
+    let powers = ["remove_block", "random_coin", 'time_increase', 'time_decrease']
     let power = powers[Math.floor(Math.random() * powers.length)];
+    power = "random_coin";
 
     if (turn === yellow) {
         powersYellow.innerText = `You got ${power}.`;
@@ -327,6 +339,64 @@ function givePowers(){
                 randomColumn = randomColumns[Math.floor(Math.random() * randomColumns.length)]
             }
             onMouseClick(randomColumn, true);
+            break;
+
+        case "time_increase":
+            if (turn === yellow) {
+                currentTime = timerYellow.innerText.slice(12);
+            }
+            else {
+                currentTime = timerRed.innerText.slice(12);
+            }
+
+            seconds = Number.parseInt(currentTime.slice(-4), 10);
+            minutes = Number.parseInt(currentTime.slice(0, -4), 10);
+            deciseconds = Number.parseInt(currentTime.slice(-1), 10);
+
+            seconds += 30;
+
+            if (seconds > 59) {
+                seconds -= 60;
+                minutes++;
+            }
+
+            currentTime =  minutes.toString() + ":" + seconds.toString().padStart(2, '0') + ":" + deciseconds.toString();
+
+            if (turn === yellow) {
+                timerYellow.innerText = `Time Left : ${currentTime}`;
+            }
+            else {
+                timerRed.innerText = `Time Left : ${currentTime}`;
+            }
+            break;
+
+        case "time_decrease":
+            if (turn === red) {
+                currentTime = timerYellow.innerText.slice(12);
+            }
+            else {
+                currentTime = timerRed.innerText.slice(12);
+            }
+
+            seconds = Number.parseInt(currentTime.slice(-4), 10);
+            minutes = Number.parseInt(currentTime.slice(0, -4), 10);
+            deciseconds = Number.parseInt(currentTime.slice(-1), 10);
+
+            seconds -= 20;
+
+            if (seconds < 0) {
+                seconds += 60;
+                minutes--;
+            }
+
+            currentTime =  minutes.toString() + ":" + seconds.toString().padStart(2, '0') + ":" + deciseconds.toString();
+
+            if (turn === yellow) {
+                timerYellow.innerText = `Time Left : ${currentTime}`;
+            }
+            else {
+                timerRed.innerText = `Time Left : ${currentTime}`;
+            }
     }
     return power;
 
@@ -346,14 +416,15 @@ columns.forEach(column => {
             onMouseClick(column, false);
             checkGameOver();
             removeBlock(columnBlocked);
-            lastColumnBlocked = columnBlocked
             columnBlocked = null;
         }
         else if (column !== columnBlocked){
             placeBlock(column);
             columnBlocked = column;
+            columnBlocks.push(columnBlocked);
             isBlocked = true;
-            lastPower = givePowers();
+            turnSwap();
+            lastPowers.push(givePowers());
         }
     })
 })
@@ -392,47 +463,91 @@ function timer(time){
 }
 
 undo.addEventListener('click', () => {
-    if (turn === red && !isBlocked){
-        let move = document.getElementById(yellowMoves.pop());
-        move.style.backgroundColor = themeRowsColor;
+    if(redMoves.length > 0 || yellowMoves.length > 0) {
+        if (turn === yellow && !isBlocked && lastPowers[lastPowers.length - 1] === "remove_block") {
+            lastPowers.pop();
+            isBlocked = true;
 
-        move.style.border = "solid 0.2rem";
-        turn = yellow;
-        placeBlock(lastColumnBlocked)
-        columnBlocked = lastColumnBlocked;
-        isBlocked = true;
-    }
-    else if (!isBlocked){
-        let move = document.getElementById(redMoves.pop());
-        move.style.backgroundColor = themeRowsColor;
+            let move = document.getElementById(yellowMoves.pop());
+            move.style.backgroundColor = themeRowsColor;
+            columnBlocks.pop();
+            move.style.border = "solid 0.2rem";
 
-        move.style.border = "solid 0.2rem";
-        turn = red;
-        placeBlock(lastColumnBlocked)
-        columnBlocked = lastColumnBlocked
-        isBlocked = true;
-    }
+        }
 
-    else if (isBlocked && lastPower === "random_coin") {
-        let move = document.getElementById(yellowMoves.pop());
-        move.style.backgroundColor = themeRowsColor;
+        else if (!isBlocked && lastPowers[lastPowers.length - 1] === "remove_block") {
+            lastPowers.pop();
+            isBlocked = true;
+            let move = document.getElementById(redMoves.pop());
+            move.style.backgroundColor = themeRowsColor;
+            columnBlocks.pop();
+            move.style.border = "solid 0.2rem";
+        }
 
-        move.style.border = "solid 0.2rem";
-        removeBlock(columnBlocked);
-        lastColumnBlocked = columnBlocked
-        columnBlocked = null;
-        isBlocked = false;
-    }
+        else if (turn === yellow && !isBlocked) {
+            isBlocked = true;
 
-    else if (isBlocked){
-        let move = document.getElementById(yellowMoves.pop());
-        move.style.backgroundColor = themeRowsColor;
+            let move = document.getElementById(yellowMoves.pop());
+            move.style.backgroundColor = themeRowsColor;
 
-        move.style.border = "solid 0.2rem";
-        removeBlock(columnBlocked);
-        lastColumnBlocked = columnBlocked
-        columnBlocked = null;
-        isBlocked = false;
+            move.style.border = "solid 0.2rem";
+            placeBlock(columnBlocks[columnBlocks.length - 1]);
+
+        }
+
+        else if (!isBlocked) {
+            isBlocked = true;
+            let move = document.getElementById(redMoves.pop());
+            move.style.backgroundColor = themeRowsColor;
+
+            move.style.border = "solid 0.2rem";
+            placeBlock(columnBlocks[columnBlocks.length - 1]);
+
+        }
+
+
+        else if (isBlocked && lastPowers[lastPowers.length - 1] === "random_coin" && turn === red) {
+            lastPowers.pop();
+
+            let move = document.getElementById(yellowMoves.pop());
+            move.style.backgroundColor = themeRowsColor;
+            move.style.border = "solid 0.2rem";
+
+            removeBlock(columnBlocks.pop());
+            columnBlocked = null;
+            isBlocked = false;
+
+        }
+
+        else if (isBlocked && lastPowers[lastPowers.length - 1] === "random_coin") {
+            lastPowers.pop();
+
+            let move = document.getElementById(redMoves.pop());
+            move.style.backgroundColor = themeRowsColor;
+            move.style.border = "solid 0.2rem";
+
+            removeBlock(columnBlocks.pop());
+            columnBlocked = null;
+            isBlocked = false;
+
+        }
+
+        else if (isBlocked && turn === red) {
+            lastPowers.pop();
+            turn = yellow;
+            removeBlock(columnBlocks.pop());
+            columnBlocked = null;
+            isBlocked = false;
+
+        }
+
+        else if (isBlocked) {
+            lastPowers.pop();
+            turn = red;
+            removeBlock(columnBlocks.pop());
+            columnBlocked = null;
+            isBlocked = false;
+        }
     }
 });
 
