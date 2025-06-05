@@ -31,7 +31,7 @@ let yellowMoves = [];
 let theme = "light";
 const changeTheme = document.querySelector('#theme');
 const undo = document.querySelector('#undo');
-const leaderboard = document.querySelector('#leaderboard');
+const restart = document.querySelector('#restart');
 const gameOver = document.querySelector('#game-over');
 const gameOverText = document.querySelector('#game-over span');
 
@@ -246,9 +246,8 @@ function isGameOver(winner) {
     timerRed.innerText = "Time Left : 0:00:0";
     timerYellow.innerText = "Time Left : 0:00:0";
     gameOver.style.visibility = "visible";
-    gameOverText.style.fontSize = "3rem";
-    gameOver.style.height = "45%";
-    gameOver.style.width = "25%";
+    gameOver.style.height = "100%";
+    gameOver.style.width = "30%";
     undo.disabled = true;
 
     if (winner) {
@@ -314,7 +313,7 @@ function givePowers(){
     let seconds;
     let deciseconds;
 
-    let powers = ["remove_block", "random_coin", 'time_increase', 'time_decrease']
+    let powers = ["Block Remove", "Random Disc", 'time_increase', 'time_decrease']
     let power = powers[Math.floor(Math.random() * powers.length)];
 
     if (turn === yellow) {
@@ -326,12 +325,12 @@ function givePowers(){
     }
 
     switch(power){
-        case "remove_block":
+        case "Block Remove":
             removeBlock(columnBlocked);
             columnBlocked = null;
             break;
 
-        case "random_coin":
+        case "Random Disc":
             let randomColumns = Array.from(document.querySelectorAll('.columns'))
             randomColumn = randomColumns[Math.floor(Math.random() * randomColumns.length)]
             while (randomColumn === columnBlocked) {
@@ -464,7 +463,7 @@ function timer(time){
 
 undo.addEventListener('click', () => {
     if(redMoves.length > 0 || yellowMoves.length > 0) {
-        if (turn === yellow && !isBlocked && lastPowers[lastPowers.length - 1] === "remove_block") {
+        if (turn === yellow && !isBlocked && lastPowers[lastPowers.length - 1] === "Block Remove") {
             lastPowers.pop();
             isBlocked = true;
 
@@ -475,7 +474,7 @@ undo.addEventListener('click', () => {
 
         }
 
-        else if (!isBlocked && lastPowers[lastPowers.length - 1] === "remove_block") {
+        else if (!isBlocked && lastPowers[lastPowers.length - 1] === "Block Remove") {
             lastPowers.pop();
             isBlocked = true;
             let move = document.getElementById(redMoves.pop());
@@ -504,7 +503,7 @@ undo.addEventListener('click', () => {
         }
 
 
-        else if (isBlocked && lastPowers[lastPowers.length - 1] === "random_coin" && turn === yellow) {
+        else if (isBlocked && lastPowers[lastPowers.length - 1] === "Random Disc" && turn === yellow) {
             lastPowers.pop();
 
             let move = document.getElementById(yellowMoves.pop());
@@ -517,7 +516,7 @@ undo.addEventListener('click', () => {
             turnSwap();
         }
 
-        else if (isBlocked && lastPowers[lastPowers.length - 1] === "random_coin") {
+        else if (isBlocked && lastPowers[lastPowers.length - 1] === "Random Disc") {
             lastPowers.pop();
 
             let move = document.getElementById(redMoves.pop());
@@ -584,3 +583,7 @@ setInterval((rerollPower = false) => {
     })
 
 }, 100);
+
+restart.addEventListener("click", () => {
+    location.reload();
+})
