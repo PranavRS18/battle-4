@@ -4,3 +4,9 @@
 
 ## v2.0
 * Same Features as v1.3, Added Undo with Time Changes also. Tags are used to store history of the game. Replay still not added.
+
+## v2.1
+* Added Replay Feature.
+
+## v2.1.1
+* Fixed Bugs

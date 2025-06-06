@@ -628,11 +628,10 @@ start.addEventListener('click', () => {
             let column;
             let blockedColumn = null;
             turn = 1;
-
+            console.log(history);
             const replayLoop = setInterval(() => {
                 if (logIndex < history.length) {
                     log = history[logIndex];
-                    console.log(log);
                     if (log.length === 7) {
                         power = reversePowersMapping[Number.parseInt(log[0])];
 
@@ -650,10 +649,18 @@ start.addEventListener('click', () => {
                             document.querySelector(".red img").style.opacity = '1';
                         }
 
-                        if (turn === 2) {
-                            timerRed.innerText = "Time Left : " + log.slice(1);
-                        } else {
-                            timerYellow.innerText = "Time Left : " + log.slice(1);
+                        try {
+                            let nextLog = history[logIndex + 3];
+                            if (nextLog[1] === 's') {
+                                nextLog = history[logIndex + 4];
+                            }
+                            if (turn === 2) {
+                                timerRed.innerText = "Time Left : " + nextLog.slice(1);
+                            } else {
+                                timerYellow.innerText = "Time Left : " + nextLog.slice(1);
+                            }
+                        } catch (e) {
+                            console.error("About to End");
                         }
 
                         if (log[0] === "3" && logIndex > 1) {
@@ -746,6 +753,16 @@ start.addEventListener('click', () => {
                     }
                     logIndex++;
                 } else {
+                    if (timerYellow.innerText.slice(12) <= "0:00:0") {
+                        isGameOver(1);
+                        isFinished = true;
+                        timerYellow.innerText = "Time Left : 0:00:0";
+                    }
+                    if (timerRed.innerText.slice(12) <= "0:00:0") {
+                        isGameOver(1);
+                        isFinished = true;
+                        timerYellow.innerText = "Time Left : 0:00:0";
+                    }
                     isReplaying = false;
                     clearInterval(replayLoop);
                 }
