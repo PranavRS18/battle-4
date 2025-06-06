@@ -9,8 +9,11 @@
 * Added Replay Feature.
 
 ## v2.1.1
-* Fixed Bugs
+* Bug Fixes
 
 ## v3.0
 * Added Home Screen and Made Restart and Start Better. Switches Turns on Restart
 * Settings is still not added
+
+## v3.0.1
+* Bug Fixes
