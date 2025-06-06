@@ -10,30 +10,33 @@ html {
 }
 
 main {
-    background: linear-gradient(indianred, yellow);
-    height: 99.8vh;
+    height: 80vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
-
-#menu {
-    display: flex;
-    flex-direction: column;
+body {
+    background: linear-gradient(indianred, yellow);
 }
 
 .menuButtons {
-    background: pink;
+    background-color: salmon;
     width: 40vh;
-    height: 5vh;
-    font-size: 150%;
-    font-family: Georgia, serif;
+    height: 10vh;
+    font-size: 300%;
+    font-family: Verdana, serif;
     border-radius: 1rem;
     border: black solid 0.05rem;
     margin: 0.5rem;
-    transition: background-color 0.5s ease;
+    transition: background-color 0.4s ease;
 }
 
 .menuButtons:hover {
-    background-color: coral;
+    background-color: lightgoldenrodyellow;
+}
+
+#anchor {
+    position: absolute;
+    margin-top: 30%;
 }

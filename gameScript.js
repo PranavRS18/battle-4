@@ -10,7 +10,7 @@ start.addEventListener('click', () => {
     // Start Button
     start.disabled = true;
     start.style.visibility = 'hidden';
-    undo.disabled = false
+    undo.disabled = false;
 })
 
 // Document Object Model Manipulation
@@ -19,6 +19,23 @@ const navbar = document.querySelector('#navbar');
 const main = document.querySelector('main');
 const board = document.querySelector('#board');
 const footer = document.querySelector('footer');
+const settings = document.querySelector('#settings');
+const settingsBlock = document.querySelector('#settingsBlock');
+const audio = document.querySelector('#isAudio');
+const gameAudio = document.querySelector('#isGameAudio');
+const backGroundMusic = new Audio('background.mp3');
+const gameMusic = [];
+gameMusic.push(new Audio('drop.mp3'));
+gameMusic.push(new Audio('block.mp3'));
+gameMusic.push(new Audio('powerSound.mp3'));
+const backGroundVolume = document.querySelector('#audioVolume');
+const gameVolume = document.querySelector('#gameAudioVolume');
+
+audio.checked = true;
+gameAudio.checked = true;
+
+let isSettings = true;
+
 
 // Timers
 const timerRed = document.querySelector('.time.red');
@@ -131,6 +148,10 @@ function givePowers() {
     let powers = ["Block Remove", "Random Disc", 'Add 15 Seconds', 'Lose 10 Seconds']
     let power = powers[Math.floor(Math.random() * powers.length)];
 
+    if (gameAudio.checked) {
+        gameMusic[2].play()
+    }
+
     if (turn === 2) {
         powersRed.innerText = "";
         redPowerImg.style.opacity = '0';
@@ -216,6 +237,10 @@ function placeBlock(column) {
             row.style.backgroundColor = "black";
         }
     })
+
+    if (gameAudio.checked) {
+        gameMusic[1].play()
+    }
     history.push(`${turn}b${column.id}row-0`);
     let curr_time;
     if (turn === 1) {
@@ -370,6 +395,10 @@ function onMouseClick(column, isPower) {
                 onMouseEnter(column);
             }
             checkGameOver();
+
+            if (gameAudio.checked) {
+                gameMusic[0].play()
+            }
             return true;
         }
     })
@@ -613,6 +642,30 @@ setInterval(() => {
         }
     })
 
+    if (settings.matches(":hover")) {
+        settingsBlock.style.opacity = '0.9';
+        isSettings = true;
+    }
+    else if (settingsBlock.matches(":hover") && isSettings) {
+        settingsBlock.style.opacity = '0.9';
+    }
+    else {
+        settingsBlock.style.opacity = '0';
+        isSettings = false;
+    }
+
+    if (audio.checked) {
+        backGroundMusic.play();
+        backGroundMusic.volume = backGroundVolume.value / 100;
+    }
+    else {
+        backGroundMusic.pause();
+    }
+
+    gameMusic.forEach(audio => {
+        audio.volume = gameVolume.value / 100;
+    })
+
     // Text Display
     if (!isFinished) {
 
@@ -670,158 +723,153 @@ setInterval(() => {
 }, 100);
 
 replay.addEventListener('click', () => {
-    if (replayLoop) {
-        clearInterval(replayLoop);
-    }
-    clearBoard();
+    if(!isReplaying) {
+        isReplaying = true;
+        let logIndex = 0;
+        let log;
+        let power;
+        let currentTime;
+        let column;
+        let blockedColumn = null;
+        turn = 1;
+        console.log(history);
+        const replayLoop = setInterval(() => {
+            if (logIndex < history.length) {
+                log = history[logIndex];
+                if (log.length === 7) {
+                    power = reversePowersMapping[Number.parseInt(log[0])];
 
-    let logIndex = 0;
-    let log;
-    let power;
-    let currentTime;
-    let column;
-    let blockedColumn = null;
-    turn = 1;
-    console.log(history);
-    const replayLoop = setInterval(() => {
-        if (logIndex < history.length) {
-            log = history[logIndex];
-            if (log.length === 7) {
-                power = reversePowersMapping[Number.parseInt(log[0])];
-
-                if (turn === 2) {
-                    powersRed.innerText = "";
-                    redPowerImg.style.opacity = '0';
-                    powersYellow.innerText = `Player 2 gets`;
-                    yellowPowerImg.src = `${power}.jpg`
-                    yellowPowerImg.style.opacity = '1';
-                } else {
-                    powersYellow.innerText = "";
-                    yellowPowerImg.style.opacity = '0';
-                    powersRed.innerText = `Player 1 gets`;
-                    redPowerImg.src = `${power}.jpg`
-                    redPowerImg.style.opacity = '1';
-                }
-
-                try {
-                    let nextLog = history[logIndex + 3];
-                    if (nextLog[1] === 's') {
-                        nextLog = history[logIndex + 4];
-                    }
                     if (turn === 2) {
-                        timerRed.innerText = "Time Left : " + nextLog.slice(1);
+                        powersRed.innerText = "";
+                        redPowerImg.style.opacity = '0';
+                        powersYellow.innerText = `Player 2 gets`;
+                        yellowPowerImg.src = `${power}.jpg`
+                        yellowPowerImg.style.opacity = '1';
                     } else {
-                        timerYellow.innerText = "Time Left : " + nextLog.slice(1);
+                        powersYellow.innerText = "";
+                        yellowPowerImg.style.opacity = '0';
+                        powersRed.innerText = `Player 1 gets`;
+                        redPowerImg.src = `${power}.jpg`
+                        redPowerImg.style.opacity = '1';
                     }
-                } catch (e) {
-                    console.error("About to End");
-                }
 
-                if (log[0] === "3" && logIndex > 1) {
-                    let currentHistory = history.slice(0, logIndex).filter(log => log[1] === 'b');
-                    let query = currentHistory[currentHistory.length - 1].slice(2, 7);
-                    column = document.querySelector(`#${query}`)
+                    try {
+                        let nextLog = history[logIndex + 3];
+                        if (nextLog[1] === 's') {
+                            nextLog = history[logIndex + 4];
+                        }
+                        if (turn === 2) {
+                            timerRed.innerText = "Time Left : " + nextLog.slice(1);
+                        } else {
+                            timerYellow.innerText = "Time Left : " + nextLog.slice(1);
+                        }
+                    } catch (e) {
+                        console.error("About to End");
+                    }
+
+                    if (log[0] === "3" && logIndex > 1) {
+                        let currentHistory = history.slice(0, logIndex).filter(log => log[1] === 'b');
+                        let query = currentHistory[currentHistory.length - 1].slice(2, 7);
+                        column = document.querySelector(`#${query}`)
+                        rows = Array.from(column.children).reverse();
+                        rows.forEach(row => {
+                            if (row.style.backgroundColor === "black") {
+                                row.style.backgroundColor = themeRowsColor;
+                            }
+                        })
+                        blockedColumn = null;
+                    } else if (log[0] === "4") {
+                        let currentHistory = history.slice(0, logIndex);
+                        let query = currentHistory[currentHistory.length - 1].slice(2);
+                        let disc = document.querySelector(`#${query}`);
+                        disc.style.transition = "background-color 0.2s ease-in, border 0.2s ease-in";
+                        disc.style.backgroundColor = players[turn];
+                        disc.style.border = "double 0.5rem";
+                    } else if (log[0] === "5") {
+                        if (turn === 2) {
+                            currentTime = timerYellow.innerText.slice(12);
+                        } else {
+                            currentTime = timerRed.innerText.slice(12);
+                        }
+
+                        currentTime = timer(currentTime, -150);
+
+                        if (turn === 2) {
+                            timerYellow.innerText = `Time Left : ${currentTime}`;
+                        } else {
+                            timerRed.innerText = `Time Left : ${currentTime}`;
+                        }
+
+                    } else if (log[0] === "6") {
+                        if (turn === 1) {
+                            currentTime = timerYellow.innerText.slice(12);
+                        } else {
+                            currentTime = timerRed.innerText.slice(12);
+                        }
+
+                        currentTime = timer(currentTime, 100);
+
+                        if (turn === 1) {
+                            timerYellow.innerText = `Time Left : ${currentTime}`;
+                        } else {
+                            timerRed.innerText = `Time Left : ${currentTime}`;
+                        }
+
+                    }
+
+                } else if (log[1] === 'p') {
+                    let query = log.slice(2, 7);
+                    column = document.querySelector(`#${query}`);
+                    rows = Array.from(column.children).reverse();
+                    rows.some(row => {
+                        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+                            row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
+                            row.style.backgroundColor = players[turn];
+                            row.style.border = "double 0.5rem";
+                            return true;
+                        }
+                    });
+
+                    try {
+                        rows = Array.from(blockedColumn.children).reverse();
+                        rows.forEach(row => {
+                            if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+                                row.style.backgroundColor = themeRowsColor;
+                            }
+                        })
+                    } catch (error) {
+                        console.error("No Column Found");
+                    }
+                } else if (log[1] === 'b') {
+                    let query = log.slice(2, 7);
+                    column = document.querySelector(`#${query}`);
                     rows = Array.from(column.children).reverse();
                     rows.forEach(row => {
-                        if (row.style.backgroundColor === "black") {
-                            row.style.backgroundColor = themeRowsColor;
-                        }
-                    })
-                    blockedColumn = null;
-                }
-                else if (log[0] === "4") {
-                    let currentHistory = history.slice(0, logIndex);
-                    let query = currentHistory[currentHistory.length - 1].slice(2);
-                    let disc = document.querySelector(`#${query}`);
-                    disc.style.transition = "background-color 0.2s ease-in, border 0.2s ease-in";
-                    disc.style.backgroundColor = players[turn];
-                    disc.style.border = "double 0.5rem";
-                }
-                else if (log[0] === "5") {
-                    if (turn === 2) {
-                        currentTime = timerYellow.innerText.slice(12);
-                    } else {
-                        currentTime = timerRed.innerText.slice(12);
-                    }
-
-                    currentTime = timer(currentTime, -150);
-
-                    if (turn === 2) {
-                        timerYellow.innerText = `Time Left : ${currentTime}`;
-                    } else {
-                        timerRed.innerText = `Time Left : ${currentTime}`;
-                    }
-
-                }
-                else if (log[0] === "6") {
-                    if (turn === 1) {
-                        currentTime = timerYellow.innerText.slice(12);
-                    } else {
-                        currentTime = timerRed.innerText.slice(12);
-                    }
-
-                    currentTime = timer(currentTime, 100);
-
-                    if (turn === 1) {
-                        timerYellow.innerText = `Time Left : ${currentTime}`;
-                    } else {
-                        timerRed.innerText = `Time Left : ${currentTime}`;
-                    }
-
-                }
-
-            } else if (log[1] === 'p') {
-                let query = log.slice(2, 7);
-                column = document.querySelector(`#${query}`);
-                rows = Array.from(column.children).reverse();
-                rows.some(row => {
-                    if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
-                        row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
-                        row.style.backgroundColor = players[turn];
-                        row.style.border = "double 0.5rem";
-                        return true;
-                    }
-                });
-
-                try {
-                    rows = Array.from(blockedColumn.children).reverse();
-                    rows.forEach(row => {
                         if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
-                            row.style.backgroundColor = themeRowsColor;
+                            row.style.backgroundColor = "black";
                         }
                     })
-                } catch (error) {
-                    console.error("No Column Found");
+                    blockedColumn = column;
+                    turnSwap();
                 }
-            } else if (log[1] === 'b') {
-                let query = log.slice(2, 7);
-                column = document.querySelector(`#${query}`);
-                rows = Array.from(column.children).reverse();
-                rows.forEach(row => {
-                    if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
-                        row.style.backgroundColor = "black";
-                    }
-                })
-                blockedColumn = column;
-                turnSwap();
+                logIndex++;
+            } else {
+                if (timerYellow.innerText.slice(12) <= "0:00:0") {
+                    isGameOver(1);
+                    isFinished = true;
+                    timerYellow.innerText = "Time Left : 0:00:0";
+                }
+                if (timerRed.innerText.slice(12) <= "0:00:0") {
+                    isGameOver(1);
+                    isFinished = true;
+                    timerYellow.innerText = "Time Left : 0:00:0";
+                }
+                isReplaying = false;
+                clearInterval(replayLoop);
             }
-            logIndex++;
-        } else {
-            if (timerYellow.innerText.slice(12) <= "0:00:0") {
-                isGameOver(1);
-                isFinished = true;
-                timerYellow.innerText = "Time Left : 0:00:0";
-            }
-            if (timerRed.innerText.slice(12) <= "0:00:0") {
-                isGameOver(1);
-                isFinished = true;
-                timerYellow.innerText = "Time Left : 0:00:0";
-            }
-            isReplaying = false;
-            clearInterval(replayLoop);
-        }
-    }, 1000);
 
+        }, 1000);
+    }
 })
 
 function Restart() {
