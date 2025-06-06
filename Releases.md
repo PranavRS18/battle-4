@@ -17,3 +17,7 @@
 
 ## v3.0.1
 * Bug Fixes
+
+## v4.0
+* Added Sounds and Polished Home Page
+* Known Bugs exist
