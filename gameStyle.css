@@ -29,13 +29,6 @@ main {
     font-size: 1.3rem;
 }
 
-#game-over span {
-    width: 40%;
-    height: 50%;
-    text-align: center;
-    font-size: 1.3rem;
-}
-
 .container {
     display: flex;
     flex-shrink: 1;
@@ -145,9 +138,10 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     transition: width 1s ease-out,
                 height 1s ease-out,
-                background-color 0.5s ease-in;;
+                background-color 0.5s ease-in;
 }
 
 #game-over span {
@@ -155,6 +149,25 @@ main {
     height: 70%;
     font-size: 2rem;
     transition: font-size 1s ease-out;
+}
+
+#replay {
+    margin-bottom: 0.2rem;
+    font-family: Georgia, serif;
+    background-color: coral;
+    font-size: 0;
+    height: 3rem;
+    width: 0;
+    border: black double 0.2em;
+    border-radius: 0.5rem;
+    visibility: hidden;
+    transition: background-color 0.3s ease-in,
+                width 1s ease-in,
+                font-size 1s ease-in;
+}
+
+#replay:hover {
+    background-color: ghostwhite;
 }
 
 #game {
