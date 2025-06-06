@@ -438,13 +438,6 @@ changeTheme.addEventListener('click', () => {
             tool.style.color = 'white';
         })
 
-        // Turn
-        if (turn === 'rgb(234, 47, 20)') {
-            turn = 1;
-        } else {
-            turn = 2;
-        }
-
         theme = "dark";
     } else {
         navbar.style.backgroundColor = 'rgb(75, 163, 163)';
@@ -461,29 +454,26 @@ changeTheme.addEventListener('click', () => {
         document.querySelectorAll(".tools").forEach(tool => {
             tool.style.color = 'black';
         })
-
-        // Turn
-        if (turn === 'rgb(139, 30, 15)') {
-            turn = 2;
-        } else {
-            turn = 1;
-        }
-
         theme = "light";
+    }
+
+    players = {
+        1 : red,
+        2: yellow
     }
 
     rowButtons.forEach(button => {
         if (button.parentElement !== findBlockedColumn() || !isPlay) {
-            button.style.transition = 'background-color 0.5s ease-in, border 0.2s ease-in'
-            button.style.backgroundColor = themeRowsColor;
+            if(button.style.backgroundColor !== 'red' && button.style.backgroundColor !== 'yellow') {
+                button.style.transition = 'background-color 0.5s ease-in, border 0.2s ease-in'
+                button.style.backgroundColor = themeRowsColor;
+            }
         }
     })
 
     redUserInfo.forEach(element => {
         element.style.backgroundColor = red;
     })
-
-    console.log(history)
 
     history.filter(log => log.slice(0, 2) === '1p').forEach(move => {
         move = document.querySelector(`#${move.slice(2, 12)}`);
@@ -644,27 +634,33 @@ setInterval(() => {
 
     if (settings.matches(":hover")) {
         settingsBlock.style.opacity = '0.9';
+        settingsBlock.style.zIndex = '1';
         isSettings = true;
     }
     else if (settingsBlock.matches(":hover") && isSettings) {
+        settingsBlock.style.zIndex = '1';
         settingsBlock.style.opacity = '0.9';
     }
     else {
+        settingsBlock.style.zIndex = '-1';
         settingsBlock.style.opacity = '0';
         isSettings = false;
     }
 
-    if (audio.checked) {
-        backGroundMusic.play();
-        backGroundMusic.volume = backGroundVolume.value / 100;
-    }
-    else {
-        backGroundMusic.pause();
-    }
+    try {
+        if (audio.checked) {
+            backGroundMusic.play();
+            backGroundMusic.volume = backGroundVolume.value / 100;
+        } else {
+            backGroundMusic.pause();
+        }
 
-    gameMusic.forEach(audio => {
-        audio.volume = gameVolume.value / 100;
-    })
+        gameMusic.forEach(audio => {
+            audio.volume = gameVolume.value / 100;
+        })
+    } catch (e) {
+        console.log("No Audio");
+    }
 
     // Text Display
     if (!isFinished) {
@@ -725,6 +721,7 @@ setInterval(() => {
 replay.addEventListener('click', () => {
     if(!isReplaying) {
         isReplaying = true;
+        clearBoard();
         let logIndex = 0;
         let log;
         let power;

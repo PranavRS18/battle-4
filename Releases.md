@@ -21,3 +21,6 @@
 ## v4.0
 * Added Sounds and Polished Home Page
 * Known Bugs exist
+
+## v4.1
+* Bug Fixes
