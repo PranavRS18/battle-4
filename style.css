@@ -10,7 +10,7 @@ html {
 }
 
 main {
-    background-color: cornflowerblue;
+    background: linear-gradient(indianred, yellow);
     height: 99.8vh;
     display: flex;
     justify-content: center;
@@ -23,11 +23,12 @@ main {
 }
 
 .menuButtons {
-    width: 30vh;
-    height: 8vh;
-    font-size: 200%;
+    background: pink;
+    width: 40vh;
+    height: 5vh;
+    font-size: 150%;
     font-family: Georgia, serif;
-    border-radius: 0.3rem;
+    border-radius: 1rem;
     border: black solid 0.05rem;
     margin: 0.5rem;
     transition: background-color 0.5s ease;

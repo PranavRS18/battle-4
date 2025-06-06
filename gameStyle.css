@@ -58,12 +58,15 @@ main {
 
 #theme {
     width: 10%;
-    margin-left: 1.75rem;
 }
 
 .tools:hover{
     border-bottom: black solid 0.1em;
     background-color: rgb(136, 204, 204);
+}
+
+#menu {
+    width: 8%;
 }
 
 #actionbar {

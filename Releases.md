@@ -10,3 +10,7 @@
 
 ## v2.1.1
 * Fixed Bugs
+
+## v3.0
+* Added Home Screen and Made Restart and Start Better. Switches Turns on Restart
+* Settings is still not added
