@@ -7,113 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <!-- Navigation Bar-->
-        <div class = "container" id = "navbar">
-                <button class = "tools" id = "menu">Menu</button>
-                <button class = "tools" id = "theme">Change Theme</button>
-                <button class = "tools" id = "settings">Settings</button>
-        </div>
-    </header>
     <main>
-        <!-- Undo -->
-        <div class = "container" id = "actionbar">
-            <button class = "actions" id = "restart">Restart</button>
-            <button class = "actions" id = "undo">Undo</button>
+        <div id="menu">
+            <a href = "./game.html">
+                <button class = "menuButtons" id="startButton">Start</button>
+            </a>
+            <button class = "menuButtons" id="Settings">Settings</button>
         </div>
-
-        <!-- Timers and Events -->
-        <div class = "container" id = "players">
-            <div class = "user-info red">
-                <span>Player 1 Name</span>
-                <span class = "time red">Time Left : 3:00:0</span>
-            </div>
-
-            <!-- Events -->
-            <div id = "game-over">
-                <span>Game Over</span>
-            </div>
-
-            <div class = "user-info yellow">
-                <span>Player 2 Name</span>
-                <span class = "time yellow">Time Left : 3:00:0</span>
-            </div>
-        </div>
-
-        <!-- Powerups and the Board -->
-        <div class = "container" id = "game">
-            <div class = "powerups red">
-                <span></span>
-            </div>
-
-            <div id = "board">
-                <div class = "columns" id = "col-1">
-                    <button class = "rows" id = "col-1row-1"></button>
-                    <button class = "rows" id = "col-1row-2"></button>
-                    <button class = "rows" id = "col-1row-3"></button>
-                    <button class = "rows" id = "col-1row-4"></button>
-                    <button class = "rows" id = "col-1row-5"></button>
-                    <button class = "rows" id = "col-1row-6"></button>
-                </div>
-                <div class = "columns" id = "col-2">
-                    <button class = "rows" id = "col-2row-1"></button>
-                    <button class = "rows" id = "col-2row-2"></button>
-                    <button class = "rows" id = "col-2row-3"></button>
-                    <button class = "rows" id = "col-2row-4"></button>
-                    <button class = "rows" id = "col-2row-5"></button>
-                    <button class = "rows" id = "col-2row-6"></button>
-                </div>
-                <div class = "columns" id = "col-3">
-                    <button class = "rows" id = "col-3row-1"></button>
-                    <button class = "rows" id = "col-3row-2"></button>
-                    <button class = "rows" id = "col-3row-3"></button>
-                    <button class = "rows" id = "col-3row-4"></button>
-                    <button class = "rows" id = "col-3row-5"></button>
-                    <button class = "rows" id = "col-3row-6"></button>
-                </div>
-                <div class = "columns" id = "col-4">
-                    <button class = "rows" id = "col-4row-1"></button>
-                    <button class = "rows" id = "col-4row-2"></button>
-                    <button class = "rows" id = "col-4row-3"></button>
-                    <button class = "rows" id = "col-4row-4"></button>
-                    <button class = "rows" id = "col-4row-5"></button>
-                    <button class = "rows" id = "col-4row-6"></button>
-                </div>
-                <div class = "columns" id = "col-5">
-                    <button class = "rows" id = "col-5row-1"></button>
-                    <button class = "rows" id = "col-5row-2"></button>
-                    <button class = "rows" id = "col-5row-3"></button>
-                    <button class = "rows" id = "col-5row-4"></button>
-                    <button class = "rows" id = "col-5row-5"></button>
-                    <button class = "rows" id = "col-5row-6"></button>
-                </div>
-                <div class = "columns" id = "col-6">
-                    <button class = "rows" id = "col-6row-1"></button>
-                    <button class = "rows" id = "col-6row-2"></button>
-                    <button class = "rows" id = "col-6row-3"></button>
-                    <button class = "rows" id = "col-6row-4"></button>
-                    <button class = "rows" id = "col-6row-5"></button>
-                    <button class = "rows" id = "col-6row-6"></button>
-                </div>
-                <div class = "columns" id = "col-7">
-                    <button class = "rows" id = "col-7row-1"></button>
-                    <button class = "rows" id = "col-7row-2"></button>
-                    <button class = "rows" id = "col-7row-3"></button>
-                    <button class = "rows" id = "col-7row-4"></button>
-                    <button class = "rows" id = "col-7row-5"></button>
-                    <button class = "rows" id = "col-7row-6"></button>
-                </div>
-            </div>
-
-            <div class = "powerups yellow">
-                <span></span>
-            </div>
-
-        </div>
-
     </main>
-    <footer>
-    </footer>
-    <script src="script.js"></script>
 </body>
 </html>
