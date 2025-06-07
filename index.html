@@ -7,11 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main>
-        <img src = "Assets/Images/Battle%204.png" alt = "Battle 4">
-        <a href = "./game.html" id = "anchor">
-            <button id="startButton">Start</button>
-        </a>
-    </main>
+<main>
+    <img src = "Assets/Images/Battle%204.png" alt = "Battle 4">
+    <a href = "./game.html" id = "anchor">
+        <button id="startButton">START</button>
+    </a>
+</main>
+<div class="rotate-warning" id = "warning">
+    Please rotate your device for best experience
+</div>
 </body>
+<script>
+    function checkOrientation() {
+        if (window.innerHeight > window.innerWidth) {
+            document.querySelector(".rotate-warning").style.display = "block";
+        } else {
+            document.querySelector(".rotate-warning").style.display = "none";
+        }
+    }
+
+    window.addEventListener("resize", checkOrientation);
+    window.addEventListener("load", checkOrientation);
+</script>
 </html>

@@ -130,10 +130,10 @@ let powersMapping = {
 
 // Powers
 let reversePowersMapping = {
-     3 : "Block Remove",
-     4 : "Random Disc" ,
-     5 : "Add 15 Seconds",
-     6 : "Lose 10 Seconds",
+    3 : "Block Remove",
+    4 : "Random Disc" ,
+    5 : "Add 15 Seconds",
+    6 : "Lose 10 Seconds",
     7 : "Coin Defect"
 }
 
@@ -812,18 +812,18 @@ setInterval(() => {
             timerYellow.innerText = `Time Left : ${startTime}`;
             history.push(`${powersMapping[givePowers()]}${startTime}`);
             if (turn === 1) {
-                gameOverText.textContent = `${player1Name} Turn`;
+                gameOverText.textContent = `${player1Name} to Play`;
             } else {
-                gameOverText.textContent = `${player2Name} Turn`;
+                gameOverText.textContent = `${player2Name} to Play`;
             }
         }
 
         if (isPlay && turn === 1) {
-            gameOverText.textContent = `${player1Name} Turn`;
+            gameOverText.textContent = `${player1Name} to Play`;
         } else if (turn === 1) {
             gameOverText.textContent = `${player1Name} to Block`;
         } else if (turn === 2 && isPlay) {
-            gameOverText.textContent = `${player2Name} Turn`;
+            gameOverText.textContent = `${player2Name} to Play`;
         } else {
             gameOverText.textContent = `${player2Name} to Block`;
         }
@@ -872,7 +872,7 @@ replay.addEventListener('click', () => {
         let currentTime;
         let column;
         let blockedColumn = null;
-        turn = 1;
+        turn = firstTurn;
         console.log(history);
         const replayLoop = setInterval(() => {
             if (logIndex < history.length) {
@@ -983,7 +983,7 @@ replay.addEventListener('click', () => {
                     rows = Array.from(column.children).reverse();
                     rows.some(row => {
                         if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow
-                        && row.style.backgroundColor !== "darkslategray") {
+                            && row.style.backgroundColor !== "darkslategray") {
                             row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
                             row.style.backgroundColor = players[turn];
                             row.style.border = "double 0.5rem";
@@ -999,7 +999,7 @@ replay.addEventListener('click', () => {
                         rows = Array.from(blockedColumn.children).reverse();
                         rows.forEach(row => {
                             if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow
-                            && row.style.backgroundColor !== "darkslategray") {
+                                && row.style.backgroundColor !== "darkslategray") {
                                 row.style.backgroundColor = themeRowsColor;
                             }
                         })

@@ -7,140 +7,155 @@
     <link rel="stylesheet" href="game-style.css">
 </head>
 <body>
-    <header>
-        <!-- Navigation Bar-->
-        <div class = "container" id = "navbar">
-            <button class = "tools" id = "menu" onclick = "window.location.href='index.html'">Menu</button>
-            <button class = "tools" id = "theme">Change Theme</button>
-            <button class = "tools" id = "settings">Settings</button>
-            <div id = "settingsBlock">
-                <div>
-                    <input type = "checkbox" class = "check" id = "isAudio">
-                    <label for = "isAudio" class = "text" id = "isAudioLabel">Background Music</label>
-                    <label for = "audioVolume" class = "text">Volume</label>
-                    <input type = "range" id = "audioVolume" class = "volume" min = "0" max = "100" step = "1" value = "15">
-                </div>
-                <div>
-                    <input type = "checkbox" class = "check" id = "isGameAudio">
-                    <label for = "isGameAudio" class = "text" id = "isGameAudioLabel">Game Music</label>
-                    <br>
-                    <label for = "gameAudioVolume" class = "text">Volume</label>
-                    <input type = "range" id = "gameAudioVolume" class = "volume" min = "0" max = "100" step = "1" value = "50">
-                    <button id = "reset">Reset Score</button>
-                </div>
+<header>
+    <!-- Navigation Bar-->
+    <div class = "container" id = "navbar">
+        <button class = "tools" id = "menu" onclick = "window.location.href='index.html'">Menu</button>
+        <button class = "tools" id = "theme">Change Theme</button>
+        <button class = "tools" id = "settings">Settings</button>
+        <div id = "settingsBlock">
+            <div>
+                <input type = "checkbox" class = "check" id = "isAudio">
+                <label for = "isAudio" class = "text" id = "isAudioLabel">Background Music</label>
+                <label for = "audioVolume" class = "text">Volume</label>
+                <input type = "range" id = "audioVolume" class = "volume" min = "0" max = "100" step = "1" value = "15">
             </div>
-
-        </div>
-    </header>
-    <main>
-        <!-- Undo -->
-        <div class = "container" id = "actionbar">
-            <button class = "actions" id = "restart">Restart</button>
-            <input type = "text" id = "player1Name" class = "playerName">
-            <button class = "actions" id = "start">Start Game</button>
-            <input type = "text" id = "player2Name" class = "playerName">
-            <button class = "actions" id = "undo">Undo</button>
-        </div>
-
-        <!-- Timers and Events -->
-        <div class = "container" id = "players">
-            <div class = "user-info red">
-                <span class = "name red">Player 1 Name</span>
-                <span class = "time red">Time Left : 0:00:0</span>
-            </div>
-
-            <!-- Events -->
-            <div id = "game-over">
-                <span></span>
-                <div>
-                    <h3 class = "score red">0</h3>
-                    <button id = "replay"><h4>Replay</h4></button>
-                    <h3 class = "score yellow">0</h3>
-                </div>
-            </div>
-
-            <div class = "user-info yellow">
-                <span class = "name yellow">Player 2 Name</span>
-                <span class = "time yellow">Time Left : 0:00:0</span>
+            <div>
+                <input type = "checkbox" class = "check" id = "isGameAudio">
+                <label for = "isGameAudio" class = "text" id = "isGameAudioLabel">Game Music</label>
+                <br>
+                <label for = "gameAudioVolume" class = "text">Volume</label>
+                <input type = "range" id = "gameAudioVolume" class = "volume" min = "0" max = "100" step = "1" value = "50">
+                <button id = "reset">Reset Score</button>
             </div>
         </div>
 
-        <!-- Powerups and the Board -->
-        <div class = "container" id = "game">
-            <div class = "powerups red">
-                <span></span>
-                <img src = "" alt = "" class = "red">
-            </div>
+    </div>
+</header>
+<main>
+    <!-- Undo -->
+    <div class = "container" id = "actionbar">
+        <button class = "actions" id = "restart">RESTART</button>
+        <input type = "text" id = "player1Name" class = "playerName">
+        <button class = "actions" id = "start">START GAME</button>
+        <input type = "text" id = "player2Name" class = "playerName">
+        <button class = "actions" id = "undo">UNDO</button>
+    </div>
 
-            <div id = "board">
-                <div class = "columns" id = "col-1">
-                    <button class = "rows" id = "col-1row-1"></button>
-                    <button class = "rows" id = "col-1row-2"></button>
-                    <button class = "rows" id = "col-1row-3"></button>
-                    <button class = "rows" id = "col-1row-4"></button>
-                    <button class = "rows" id = "col-1row-5"></button>
-                    <button class = "rows" id = "col-1row-6"></button>
-                </div>
-                <div class = "columns" id = "col-2">
-                    <button class = "rows" id = "col-2row-1"></button>
-                    <button class = "rows" id = "col-2row-2"></button>
-                    <button class = "rows" id = "col-2row-3"></button>
-                    <button class = "rows" id = "col-2row-4"></button>
-                    <button class = "rows" id = "col-2row-5"></button>
-                    <button class = "rows" id = "col-2row-6"></button>
-                </div>
-                <div class = "columns" id = "col-3">
-                    <button class = "rows" id = "col-3row-1"></button>
-                    <button class = "rows" id = "col-3row-2"></button>
-                    <button class = "rows" id = "col-3row-3"></button>
-                    <button class = "rows" id = "col-3row-4"></button>
-                    <button class = "rows" id = "col-3row-5"></button>
-                    <button class = "rows" id = "col-3row-6"></button>
-                </div>
-                <div class = "columns" id = "col-4">
-                    <button class = "rows" id = "col-4row-1"></button>
-                    <button class = "rows" id = "col-4row-2"></button>
-                    <button class = "rows" id = "col-4row-3"></button>
-                    <button class = "rows" id = "col-4row-4"></button>
-                    <button class = "rows" id = "col-4row-5"></button>
-                    <button class = "rows" id = "col-4row-6"></button>
-                </div>
-                <div class = "columns" id = "col-5">
-                    <button class = "rows" id = "col-5row-1"></button>
-                    <button class = "rows" id = "col-5row-2"></button>
-                    <button class = "rows" id = "col-5row-3"></button>
-                    <button class = "rows" id = "col-5row-4"></button>
-                    <button class = "rows" id = "col-5row-5"></button>
-                    <button class = "rows" id = "col-5row-6"></button>
-                </div>
-                <div class = "columns" id = "col-6">
-                    <button class = "rows" id = "col-6row-1"></button>
-                    <button class = "rows" id = "col-6row-2"></button>
-                    <button class = "rows" id = "col-6row-3"></button>
-                    <button class = "rows" id = "col-6row-4"></button>
-                    <button class = "rows" id = "col-6row-5"></button>
-                    <button class = "rows" id = "col-6row-6"></button>
-                </div>
-                <div class = "columns" id = "col-7">
-                    <button class = "rows" id = "col-7row-1"></button>
-                    <button class = "rows" id = "col-7row-2"></button>
-                    <button class = "rows" id = "col-7row-3"></button>
-                    <button class = "rows" id = "col-7row-4"></button>
-                    <button class = "rows" id = "col-7row-5"></button>
-                    <button class = "rows" id = "col-7row-6"></button>
-                </div>
-            </div>
-
-            <div class = "powerups yellow">
-                <span></span>
-                <img src = "" alt = "" class = "yellow">
-            </div>
-
+    <!-- Timers and Events -->
+    <div class = "container" id = "players">
+        <div class = "user-info red">
+            <span class = "name red"></span>
+            <span class = "time red">Time Left : 0:00:0</span>
         </div>
 
-    </main>
-    <footer>
-    </footer>
-    <script src="game-script.js"></script>
+        <!-- Events -->
+        <div id = "game-over">
+            <span></span>
+            <div id = "scoreAndReplay">
+                <h3 class = "score red">0</h3>
+                <button id = "replay"><h4>REPLAY</h4></button>
+                <h3 class = "score yellow">0</h3>
+            </div>
+        </div>
+
+        <div class = "user-info yellow">
+            <span class = "name yellow"></span>
+            <span class = "time yellow">Time Left : 0:00:0</span>
+        </div>
+    </div>
+
+    <!-- Powerups and the Board -->
+    <div class = "container" id = "game">
+        <div class = "powerups red">
+            <span></span>
+            <img src = "" alt = "" class = "red">
+        </div>
+
+        <div id = "board">
+            <div class = "columns" id = "col-1">
+                <button class = "rows" id = "col-1row-1"></button>
+                <button class = "rows" id = "col-1row-2"></button>
+                <button class = "rows" id = "col-1row-3"></button>
+                <button class = "rows" id = "col-1row-4"></button>
+                <button class = "rows" id = "col-1row-5"></button>
+                <button class = "rows" id = "col-1row-6"></button>
+            </div>
+            <div class = "columns" id = "col-2">
+                <button class = "rows" id = "col-2row-1"></button>
+                <button class = "rows" id = "col-2row-2"></button>
+                <button class = "rows" id = "col-2row-3"></button>
+                <button class = "rows" id = "col-2row-4"></button>
+                <button class = "rows" id = "col-2row-5"></button>
+                <button class = "rows" id = "col-2row-6"></button>
+            </div>
+            <div class = "columns" id = "col-3">
+                <button class = "rows" id = "col-3row-1"></button>
+                <button class = "rows" id = "col-3row-2"></button>
+                <button class = "rows" id = "col-3row-3"></button>
+                <button class = "rows" id = "col-3row-4"></button>
+                <button class = "rows" id = "col-3row-5"></button>
+                <button class = "rows" id = "col-3row-6"></button>
+            </div>
+            <div class = "columns" id = "col-4">
+                <button class = "rows" id = "col-4row-1"></button>
+                <button class = "rows" id = "col-4row-2"></button>
+                <button class = "rows" id = "col-4row-3"></button>
+                <button class = "rows" id = "col-4row-4"></button>
+                <button class = "rows" id = "col-4row-5"></button>
+                <button class = "rows" id = "col-4row-6"></button>
+            </div>
+            <div class = "columns" id = "col-5">
+                <button class = "rows" id = "col-5row-1"></button>
+                <button class = "rows" id = "col-5row-2"></button>
+                <button class = "rows" id = "col-5row-3"></button>
+                <button class = "rows" id = "col-5row-4"></button>
+                <button class = "rows" id = "col-5row-5"></button>
+                <button class = "rows" id = "col-5row-6"></button>
+            </div>
+            <div class = "columns" id = "col-6">
+                <button class = "rows" id = "col-6row-1"></button>
+                <button class = "rows" id = "col-6row-2"></button>
+                <button class = "rows" id = "col-6row-3"></button>
+                <button class = "rows" id = "col-6row-4"></button>
+                <button class = "rows" id = "col-6row-5"></button>
+                <button class = "rows" id = "col-6row-6"></button>
+            </div>
+            <div class = "columns" id = "col-7">
+                <button class = "rows" id = "col-7row-1"></button>
+                <button class = "rows" id = "col-7row-2"></button>
+                <button class = "rows" id = "col-7row-3"></button>
+                <button class = "rows" id = "col-7row-4"></button>
+                <button class = "rows" id = "col-7row-5"></button>
+                <button class = "rows" id = "col-7row-6"></button>
+            </div>
+        </div>
+
+        <div class = "powerups yellow">
+            <span></span>
+            <img src = "" alt = "" class = "yellow">
+        </div>
+
+    </div>
+
+</main>
+<div class="rotate-warning" id = "warning">
+    Please rotate your device for best experience
+</div>
+<footer>
+</footer>
+<script src="game-script.js"></script>
+<script>
+    function checkOrientation() {
+        if (window.innerHeight > window.innerWidth) {
+            document.querySelector(".rotate-warning").style.display = "block";
+        } else {
+            document.querySelector(".rotate-warning").style.display = "none";
+        }
+    }
+
+    window.addEventListener("resize", checkOrientation);
+    window.addEventListener("load", checkOrientation);
+</script>
 </body>
 </html>

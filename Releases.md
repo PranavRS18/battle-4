@@ -35,3 +35,6 @@
 * Added Button, Victory and Draw Sounds
 * Made Abrupt Animations more Smooth
 * Minor Bug Fixes 
+
+## v6.0
+* Added Mobile Web Application Responsiveness

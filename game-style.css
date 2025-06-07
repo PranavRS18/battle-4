@@ -5,20 +5,14 @@
 }
 
 html {
-    font-size: 1.2vw;
-    overflow: hidden;
+    height: 100dvh;
+    font-size: 1.2dvw;
+    font-family: "Comic Sans MS", display;
 }
 
 main {
     background-color: rgb(0, 223, 223);
     transition: background-color 0.5s ease-in;
-}
-
-.user-info span {
-    width: 40%;
-    height: 50%;
-    text-align: center;
-    font-size: 1.3rem;
 }
 
 .powerups span {
@@ -33,7 +27,7 @@ main {
     display: flex;
     flex-shrink: 1;
     align-items: center;
-    font-family: "Times New Roman", serif;
+    font-family: "Comic Sans MS", display;
 }
 
 #navbar {
@@ -51,7 +45,7 @@ main {
     height: 65%;
     width: 8%;
     font-size: 1rem;
-    font-family: Georgia, serif;
+    font-family: "Comic Sans MS", display;
     border-radius: 0.5rem;
     transition: color 0.5s ease-in;
 }
@@ -68,7 +62,7 @@ main {
 #menu {
     width: 8%;
     transition: background-color 0.5s ease-in,
-                color 0.5s ease-in;
+    color 0.5s ease-in;
 }
 
 #actionbar {
@@ -80,19 +74,19 @@ main {
 .actions {
     height: 90%;
     width: 7.5%;
-    font-size: 1rem;
-    font-family: Georgia, serif;
+    font-size: 0.9rem;
+    font-family: "Comic Sans MS", display;
     border-radius: 0.5rem;
     border: black solid 0.1em;
 }
 
 #start {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     width: 20%;
     height: 100%;
     transition: opacity 0.35s ease-in,
-                background-color 0.5s ease-in,
-                color 0.5s ease-in;
+    background-color 0.5s ease-in,
+    color 0.5s ease-in;
 }
 
 #start:hover {
@@ -102,7 +96,7 @@ main {
 .tools,
 .actions {
     transition: background-color 0.5s ease-out,
-                color 0.5s ease-out;
+    color 0.5s ease-out;
 }
 
 .actions:hover {
@@ -119,18 +113,35 @@ main {
 .user-info {
     display: flex;
     height: 40%;
-    width: 30%;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem 0 1rem;
+    width: 33%;
+    align-items: flex-end;
+    justify-content: flex-start;
     border-radius: 1rem;
     border: black solid 0.2em;
     transition: background-color 0.5s ease-in;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.name {
+    width: 100%;
+    transition: background-color 0.5s ease-in;
+}
+
+.user-info span {
+    height: 80%;
+    text-align: left;
+    line-height: 150%;
+    font-size: 1.3rem;
+    border-radius: 1rem;
+    padding-left: 1rem;
 }
 
 .time {
+    display: inline;
     background-color: inherit;
-    width: 45%;
+    width: 100%;
     transition: background-color 0.5s ease-in;
 }
 
@@ -138,12 +149,12 @@ main {
     width: 18%;
     height: 80%;
     border-radius: 0.5rem;
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     padding-left: 2rem;
-    font-family: Georgia, serif;
+    font-family: "Comic Sans MS", display;
     border: black solid 0.1em;
     transition: opacity 0.35s ease-in,
-                background-color 0.5s ease-in;
+    background-color 0.5s ease-in;
 }
 
 #game-over {
@@ -158,8 +169,13 @@ main {
     align-items: center;
     flex-direction: column;
     transition: width 1s ease-out,
-                height 1s ease-out,
-                background-color 0.5s ease-in;
+    height 1s ease-out,
+    background-color 0.5s ease-in;
+}
+
+#scoreAndReplay {
+    display : flex;
+    justify-content: space-between;
 }
 
 #game-over div {
@@ -169,11 +185,13 @@ main {
 }
 
 .score {
-    width: 30%;
+    height: 60%;
+    width: 15%;
     border-radius: 0.5rem;
-    border: black solid 0.2em;
+    border: black solid 0.1em;
+    opacity: 0.9;
     font-size: 1.5rem;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 0.4rem 0.5rem;
     transition: background-color 0.5s ease-in;
 }
 
@@ -188,18 +206,14 @@ main {
 #game-over span {
     width: 100%;
     height: 70%;
-    font-size: 2rem;
+    font-size: 1.5rem;
     padding-top: 0.5rem;
     transition: font-size 1s ease-out;
 }
 
-.name {
-    transition: background-color 0.5s ease-in;
-}
-
 #settings {
     transition: background-color 0.5s ease-in,
-                color 0.5s ease-in;
+    color 0.5s ease-in;
 }
 
 #settingsBlock {
@@ -213,6 +227,7 @@ main {
     opacity: 0;
     transition: opacity 0.5s ease-in;
     z-index: -1;
+    overflow-y: auto;
 }
 
 #settingsBlock .check {
@@ -222,7 +237,7 @@ main {
 
 #settingsBlock .text {
     font-size: 1.2rem;
-    font-family: Georgia, serif;
+    font-family: "Comic Sans MS", display;
     margin-left: 1rem;
 }
 
@@ -237,14 +252,14 @@ main {
     font-size: 0;
     height: 3rem;
     width: 30%;
-    border: black solid 0.2em;
-    font-family: "Times New Roman", serif;
+    border: black solid 0.1em;
+    font-family: "Comic Sans MS", display;
     margin-top: 0.2rem;
     border-radius: 0.5rem;
     opacity: 0;
     transition: background-color 0.3s ease-in,
-                font-size 1s ease-in,
-                opacity 0.5s ease-in;
+    font-size 1s ease-in,
+    opacity 0.5s ease-in;
 }
 
 #reset {
@@ -255,10 +270,10 @@ main {
     height: 2rem;
     border-radius: 0.5rem;
     border: black solid 0.1em;
-    font-family: Georgia, serif;
+    font-family: "Comic Sans MS", display;
     font-size: 1.2rem;
     transition: background-color 0.35s ease-in,
-                color 0.35s ease-in;
+    color 0.35s ease-in;
 }
 
 #reset:hover {
@@ -291,7 +306,7 @@ img {
     margin: auto;
     opacity: 0;
     transition: opacity 0.3s ease-in,
-                background-color 0.5s ease-in;
+    background-color 0.5s ease-in;
 }
 
 #board {
@@ -322,7 +337,7 @@ img {
     border: black 0.2rem solid;
     border-radius : 50%;
     transition: background-color 0.2s ease-in,
-                border 0.2s ease-in;
+    border 0.2s ease-in;
 }
 
 .powerups {
@@ -344,6 +359,20 @@ img {
     background-color: rgb(252, 242, 89);
 }
 
+#warning {
+    display: none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background:gray;
+    font-size: 5rem;
+    z-index: 1000;
+    text-align:center;
+    padding-top:50vh;
+}
+
 header,
 footer {
     background-color: rgb(75, 163, 163);
@@ -351,6 +380,7 @@ footer {
 }
 
 footer {
-    height: 7.1vh;
+    height: 6.6vh;
     border-top: black solid 0.05em;
+    overflow: hidden;
 }

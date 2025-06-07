@@ -5,8 +5,8 @@
 }
 
 html {
+    height: 100dvh;
     font-size: 1.2vw;
-    overflow: hidden;
 }
 
 main {
@@ -25,7 +25,7 @@ body {
     width: 40vh;
     height: 10vh;
     font-size: 300%;
-    font-family: Verdana, serif;
+    font-family: "Comic Sans MS", display;
     border-radius: 1rem;
     border: black solid 0.05rem;
     margin: 0.5rem;
@@ -39,4 +39,34 @@ body {
 #anchor {
     position: absolute;
     margin-top: 30%;
+}
+
+img {
+    width : 50%;
+}
+
+#warning {
+    display: none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background:gray;
+    font-size: 5rem;
+    z-index: 1000;
+    text-align:center;
+    padding-top:50vh;
+}
+
+@media screen and (orientation: portrait) {
+    .rotate-warning {
+        display: block;
+    }
+}
+
+@media screen and (orientation: landscape) {
+    .rotate-warning {
+        display: none;
+    }
 }
