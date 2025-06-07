@@ -24,3 +24,6 @@
 
 ## v4.1
 * Bug Fixes
+
+## v4.2
+* Minor Bug Fixes

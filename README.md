@@ -1,12 +1,12 @@
 # Connect 4: Power-Up Edition
 
-![Home.png](Home.png)
+![Home.png](Assets/Images/Home.png)
 
 Welcome to **Connect 4: Power-Up Edition**, a browser-based twist on the classic Connect 4 game. Built with **HTML**, **CSS**, and **JavaScript**, this game enhances traditional gameplay with modern UI, colorful themes, and strategic power-ups.
 
 ---
 
-![Game.png](Game.png)
+![Game.png](Assets/Images/Game.png)
 
 ## Gameplay
 

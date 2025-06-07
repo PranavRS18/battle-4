@@ -4,30 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Battle 4</title>
-    <link rel="stylesheet" href="gameStyle.css">
+    <link rel="stylesheet" href="game-style.css">
 </head>
 <body>
     <header>
         <!-- Navigation Bar-->
         <div class = "container" id = "navbar">
             <button class = "tools" id = "menu" onclick = "window.location.href='index.html'">Menu</button>
-                <button class = "tools" id = "theme">Change Theme</button>
-                <button class = "tools" id = "settings">Settings</button>
-                <div id = "settingsBlock">
-                    <div>
-                        <input type = "checkbox" class = "check" id = "isAudio">
-                        <label for = "isAudio" class = "text" id = "isAudioLabel">Background Music</label>
-                        <label for = "audioVolume" class = "text">Volume</label>
-                        <input type = "range" id = "audioVolume" class = "volume" min = "0" max = "100" step = "1" value = "15">
-                    </div>
-                    <div>
-                        <input type = "checkbox" class = "check" id = "isGameAudio">
-                        <label for = "isGameAudio" class = "text" id = "isGameAudioLabel">Game Music</label>
-                        <br>
-                        <label for = "gameAudioVolume" class = "text">Volume</label>
-                        <input type = "range" id = "gameAudioVolume" class = "volume" min = "0" max = "100" step = "1" value = "50">
-                    </div>
+            <button class = "tools" id = "theme">Change Theme</button>
+            <button class = "tools" id = "settings">Settings</button>
+            <div id = "settingsBlock">
+                <div>
+                    <input type = "checkbox" class = "check" id = "isAudio">
+                    <label for = "isAudio" class = "text" id = "isAudioLabel">Background Music</label>
+                    <label for = "audioVolume" class = "text">Volume</label>
+                    <input type = "range" id = "audioVolume" class = "volume" min = "0" max = "100" step = "1" value = "15">
                 </div>
+                <div>
+                    <input type = "checkbox" class = "check" id = "isGameAudio">
+                    <label for = "isGameAudio" class = "text" id = "isGameAudioLabel">Game Music</label>
+                    <br>
+                    <label for = "gameAudioVolume" class = "text">Volume</label>
+                    <input type = "range" id = "gameAudioVolume" class = "volume" min = "0" max = "100" step = "1" value = "50">
+                </div>
+            </div>
 
         </div>
     </header>
@@ -42,7 +42,7 @@
         <!-- Timers and Events -->
         <div class = "container" id = "players">
             <div class = "user-info red">
-                <span>Player 1 Name</span>
+                <span class = "name red">Player 1 Name</span>
                 <span class = "time red">Time Left : 3:00:0</span>
             </div>
 
@@ -53,7 +53,7 @@
             </div>
 
             <div class = "user-info yellow">
-                <span>Player 2 Name</span>
+                <span class = "name yellow">Player 2 Name</span>
                 <span class = "time yellow">Time Left : 3:00:0</span>
             </div>
         </div>
@@ -134,6 +134,6 @@
     </main>
     <footer>
     </footer>
-    <script src="gameScript.js"></script>
+    <script src="game-script.js"></script>
 </body>
 </html>

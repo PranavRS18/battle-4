@@ -23,11 +23,11 @@ const settings = document.querySelector('#settings');
 const settingsBlock = document.querySelector('#settingsBlock');
 const audio = document.querySelector('#isAudio');
 const gameAudio = document.querySelector('#isGameAudio');
-const backGroundMusic = new Audio('background.mp3');
+const backGroundMusic = new Audio('Assets/Music/background.mp3');
 const gameMusic = [];
-gameMusic.push(new Audio('drop.mp3'));
-gameMusic.push(new Audio('block.mp3'));
-gameMusic.push(new Audio('powerSound.mp3'));
+gameMusic.push(new Audio('Assets/Music/drop.mp3'));
+gameMusic.push(new Audio('Assets/Music/block.mp3'));
+gameMusic.push(new Audio('Assets/Music/powerSound.mp3'));
 const backGroundVolume = document.querySelector('#audioVolume');
 const gameVolume = document.querySelector('#gameAudioVolume');
 
@@ -64,6 +64,10 @@ let themeRowsColor = "";
 const rowButtons = document.querySelectorAll('.rows');
 const redUserInfo = document.querySelectorAll('.red');
 const yellowUserInfo = document.querySelectorAll('.yellow');
+const player1Name = "Red"
+const player2Name = "Yellow"
+document.querySelector('.name.red').innerText = player1Name;
+document.querySelector('.name.yellow').innerText = player2Name;
 
 // Board
 const columns = document.querySelectorAll('.columns');
@@ -107,11 +111,7 @@ let reversePowersMapping = {
 
 // Swap Turns
 function turnSwap() {
-    if (turn === 2) {
-        turn = 1;
-    } else {
-        turn = 2
-    }
+    turn = (turn === 1) ? 2 : 1;
 }
 
 // Get all winning combinations
@@ -155,14 +155,14 @@ function givePowers() {
     if (turn === 2) {
         powersRed.innerText = "";
         redPowerImg.style.opacity = '0';
-        powersYellow.innerText = `Player 2 gets`;
-        yellowPowerImg.src = `${power}.jpg`
+        powersYellow.innerText = `${player2Name} gets`;
+        yellowPowerImg.src = `Assets/Images/${power}.jpg`
         yellowPowerImg.style.opacity = '1';
     } else {
         powersYellow.innerText = "";
         yellowPowerImg.style.opacity = '0';
-        powersRed.innerText = `Player 1 gets`;
-        redPowerImg.src = `${power}.jpg`
+        powersRed.innerText = `${player1Name} gets`;
+        redPowerImg.src = `Assets/Images/${power}.jpg`
         redPowerImg.style.opacity = '1';
     }
 
@@ -239,15 +239,12 @@ function placeBlock(column) {
     })
 
     if (gameAudio.checked) {
-        gameMusic[1].play()
+        gameMusic[1].play();
     }
     history.push(`${turn}b${column.id}row-0`);
     let curr_time;
-    if (turn === 1) {
-        curr_time = timerYellow.innerText.slice(12);
-    } else {
-        curr_time = timerRed.innerText.slice(12);
-    }
+    curr_time = (turn === 1) ? timerYellow.innerText.slice(12) : timerRed.innerText.slice(12);
+
     turnSwap();
     history.push(`${powersMapping[givePowers()]}${curr_time}`);
     isPlay = true;
@@ -341,9 +338,12 @@ function isGameOver(winner) {
     gameOver.style.width = "30%";
     undo.disabled = true;
 
-    if (winner) {
-        gameOverText.innerText = `Player ${winner} Wins`;
-    } else {
+    if (winner && turn === 1) {
+        gameOverText.innerText = `${player1Name} Wins`;
+    } else if (winner) {
+        gameOverText.innerText = `${player2Name} Wins`;
+    }
+    else {
         gameOverText.innerText = `Draw`;
     }
 
@@ -420,8 +420,7 @@ function clearBoard() {
 }
 
 // Change Theme
-changeTheme.addEventListener('click', () => {
-
+function themeChange(logs) {
     if (theme === 'light') {
         navbar.style.backgroundColor = 'rgb(0, 62, 64)';
         footer.style.backgroundColor = 'rgb(0, 62, 64)';
@@ -458,39 +457,43 @@ changeTheme.addEventListener('click', () => {
     }
 
     players = {
-        1 : red,
+        1: red,
         2: yellow
     }
 
     rowButtons.forEach(button => {
         if (button.parentElement !== findBlockedColumn() || !isPlay) {
-            if(button.style.backgroundColor !== 'red' && button.style.backgroundColor !== 'yellow') {
+            if (button.style.backgroundColor !== 'red' && button.style.backgroundColor !== 'yellow' && button.style.backgroundColor !== 'black') {
                 button.style.transition = 'background-color 0.5s ease-in, border 0.2s ease-in'
                 button.style.backgroundColor = themeRowsColor;
             }
         }
-    })
+    });
 
     redUserInfo.forEach(element => {
         element.style.backgroundColor = red;
-    })
+    });
 
-    history.filter(log => log.slice(0, 2) === '1p').forEach(move => {
-        move = document.querySelector(`#${move.slice(2, 12)}`);
-        console.log(move);
-        move.style.backgroundColor = red;
-    })
-
-    history.filter(log => log.slice(0, 2) === '2p').forEach(move => {
-        move = document.querySelector(`#${move.slice(2, 12)}`);
-        move.style.backgroundColor = yellow;
-    })
+    logs.filter(log => log[1] !== 'b' && log.length === 12).forEach(move => {
+        let disc = document.querySelector(`#${move.slice(2, 12)}`);
+        if (move[0] === '1') {
+            disc.style.backgroundColor = red;
+        } else {
+            disc.style.backgroundColor = yellow;
+        }
+    });
 
     yellowUserInfo.forEach(element => {
         element.style.backgroundColor = yellow;
-    })
+    });
+}
 
-})
+// Changing if not Replaying
+changeTheme.addEventListener('click', () => {
+    if (!isReplaying) {
+        themeChange(history);
+    }
+});
 
 // Game
 columns.forEach(column => {
@@ -533,12 +536,7 @@ undo.addEventListener('click', () => {
                     console.log("First Move");
 
                     // Restart with Same First Turn
-                    if (firstTurn === 1) {
-                        firstTurn = 2;
-                    }
-                    else {
-                        firstTurn = 1;
-                    }
+                    firstTurn = (firstTurn === 2) ? 1 : 2;
                     Restart();
                     return;
                 }
@@ -546,14 +544,14 @@ undo.addEventListener('click', () => {
                 if (turn === 1) {
                     powersRed.innerText = "";
                     redPowerImg.style.opacity = '0';
-                    powersYellow.innerText = `Player 2 gets`;
-                    yellowPowerImg.src = `${power}.jpg`;
+                    powersYellow.innerText = `${player2Name} gets`;
+                    yellowPowerImg.src = `Assets/Images/${power}.jpg`;
                     yellowPowerImg.style.opacity = '1';
                 } else {
                     powersYellow.innerText = "";
                     yellowPowerImg.style.opacity = '0';
-                    powersRed.innerText = `Player 1 gets`;
-                    redPowerImg.src = `${power}.jpg`;
+                    powersRed.innerText = `${player1Name} gets`;
+                    redPowerImg.src = `Assets/Images/${power}.jpg`;
                     redPowerImg.style.opacity = '1';
                 }
 
@@ -592,7 +590,7 @@ undo.addEventListener('click', () => {
                 try {
                     let blockedColumns = history.filter(log => log[1] === 'b');
                     let query = blockedColumns[blockedColumns.length - 1].slice(2, 7);
-                    column = document.querySelector(`#${query}`);
+                    let column = document.querySelector(`#${query}`);
                     let allPowers = history.filter(log => log.length === 7)
                     if (allPowers[allPowers.length - 1][0] !== '3') {
                         rows = Array.from(column.children).reverse();
@@ -655,8 +653,8 @@ setInterval(() => {
             backGroundMusic.pause();
         }
 
-        gameMusic.forEach(audio => {
-            audio.volume = gameVolume.value / 100;
+        gameMusic.forEach(music => {
+            music.volume = gameVolume.value / 100;
         })
     } catch (e) {
         console.log("No Audio");
@@ -669,20 +667,24 @@ setInterval(() => {
         if (history.length === 0) {
             turn = firstTurn;
             isPlay = true;
-            gameOverText.textContent = `Player ${turn} Turn`;
             timerRed.innerText = "Time Left : 3:00:0";
             timerYellow.innerText = "Time Left : 3:00:0";
             history.push(`${powersMapping[givePowers()]}3:00:0`);
+            if (turn === 1) {
+                gameOverText.textContent = `${player1Name} Turn`;
+            } else {
+                gameOverText.textContent = `${player2Name} Turn`;
+            }
         }
 
         if (isPlay && turn === 1) {
-            gameOverText.textContent = "Player 1 Turn";
+            gameOverText.textContent = `${player1Name} Turn`;
         } else if (turn === 1) {
-            gameOverText.textContent = "Player 1 to Block";
+            gameOverText.textContent = `${player1Name} to Block`;
         } else if (turn === 2 && isPlay) {
-            gameOverText.textContent = "Player 2 Turn";
+            gameOverText.textContent = `${player2Name} Turn`;
         } else {
-            gameOverText.textContent = "Player 2 to Block";
+            gameOverText.textContent = `${player2Name} to Block`;
         }
 
         // Timer
@@ -736,17 +738,21 @@ replay.addEventListener('click', () => {
                 if (log.length === 7) {
                     power = reversePowersMapping[Number.parseInt(log[0])];
 
+                    if (gameAudio.checked) {
+                        gameMusic[2].play();
+                    }
+
                     if (turn === 2) {
                         powersRed.innerText = "";
                         redPowerImg.style.opacity = '0';
-                        powersYellow.innerText = `Player 2 gets`;
-                        yellowPowerImg.src = `${power}.jpg`
+                        powersYellow.innerText = `${player2Name} gets`;
+                        yellowPowerImg.src = `Assets/Images/${power}.jpg`
                         yellowPowerImg.style.opacity = '1';
                     } else {
                         powersYellow.innerText = "";
                         yellowPowerImg.style.opacity = '0';
-                        powersRed.innerText = `Player 1 gets`;
-                        redPowerImg.src = `${power}.jpg`
+                        powersRed.innerText = `${player1Name} gets`;
+                        redPowerImg.src = `Assets/Images/${power}.jpg`
                         redPowerImg.style.opacity = '1';
                     }
 
@@ -823,6 +829,10 @@ replay.addEventListener('click', () => {
                             row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
                             row.style.backgroundColor = players[turn];
                             row.style.border = "double 0.5rem";
+
+                            if (gameAudio.checked) {
+                                gameMusic[0].play();
+                            }
                             return true;
                         }
                     });
@@ -846,9 +856,20 @@ replay.addEventListener('click', () => {
                             row.style.backgroundColor = "black";
                         }
                     })
+
+                    if (gameAudio.checked) {
+                        gameMusic[1].play();
+                    }
                     blockedColumn = column;
                     turnSwap();
                 }
+
+                changeTheme.addEventListener('click', () => {
+                    if (isReplaying) {
+                        themeChange(history.slice(0, logIndex));
+                    }
+                });
+
                 logIndex++;
             } else {
                 if (timerYellow.innerText.slice(12) <= "0:00:0") {
