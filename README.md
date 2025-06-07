@@ -23,6 +23,7 @@ Welcome to **Connect 4: Power-Up Edition**, a browser-based twist on the classic
 * Click-based column selection
 * Hover indication with live highlighting
 * Full win detection logic for all directions
+* Names and Scores are stored across sessions (Can Reset Scores and Change Names)
 
 ### Power-Ups
 
@@ -30,12 +31,19 @@ Welcome to **Connect 4: Power-Up Edition**, a browser-based twist on the classic
 * **Random Disc**: Random Disc falls for you
 * **Time Decrease**: Reduce 10 Seconds for your Opponent
 * **Time Increase**: Increase 15 Seconds for your Opponent
+* **Disc Defect**: Make a Random Opponent Disc go Defunct
 
 ### Themes & Styling
 * Light and Dark Mode
 
 ### Sounds
-* Has Background and Game Sounds
+* Background Sound
+* Victory Sound
+* Disc Sound
+* Block Sound
+* Powerup Sound
+* Draw Sound
+* Button Sound
 
 ## 👨‍💻 Made With
 

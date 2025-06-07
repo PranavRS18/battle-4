@@ -20,7 +20,7 @@ body {
     background: linear-gradient(indianred, yellow);
 }
 
-.menuButtons {
+#startButton {
     background-color: salmon;
     width: 40vh;
     height: 10vh;
@@ -32,7 +32,7 @@ body {
     transition: background-color 0.4s ease;
 }
 
-.menuButtons:hover {
+#startButton:hover {
     background-color: lightgoldenrodyellow;
 }
 

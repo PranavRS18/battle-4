@@ -1,39 +1,66 @@
+// Local Storage
+if (!localStorage.getItem('player1Name')) {
+    localStorage.setItem('player1Name', "Red");
+    localStorage.setItem('player2Name', "Yellow");
+    localStorage.setItem('player1Score', '0');
+    localStorage.setItem('player2Score', '0');
+}
+
+let player1Score = localStorage.getItem('player1Score');
+let player2Score = localStorage.getItem('player2Score');
+let player1Name = localStorage.getItem('player1Name');
+let player2Name = localStorage.getItem('player2Name');
+
+//Name
+const player1NameInput = document.getElementById('player1Name');
+const player2NameInput = document.getElementById('player2Name');
+player1NameInput.value = player1Name;
+player2NameInput.value = player2Name;
+
+//Score
+const player1ScoreDisplay = document.querySelector(".score.red")
+const player2ScoreDisplay = document.querySelector(".score.yellow")
+player1ScoreDisplay.textContent = player1Score;
+player2ScoreDisplay.textContent = player2Score;
+
 // Start
 let isFinished = true;
+let startTime = "2:30:0";
 
 const undo = document.querySelector('#undo');
 const start = document.querySelector('#start');
-undo.disabled = true
-
-start.addEventListener('click', () => {
-    isFinished = false;
-    // Start Button
-    start.disabled = true;
-    start.style.visibility = 'hidden';
-    undo.disabled = false;
-})
+const reset = document.querySelector('#reset');
+undo.disabled = true;
 
 // Document Object Model Manipulation
-
 const navbar = document.querySelector('#navbar');
 const main = document.querySelector('main');
 const board = document.querySelector('#board');
 const footer = document.querySelector('footer');
 const settings = document.querySelector('#settings');
 const settingsBlock = document.querySelector('#settingsBlock');
+
+// Audio
 const audio = document.querySelector('#isAudio');
 const gameAudio = document.querySelector('#isGameAudio');
 const backGroundMusic = new Audio('Assets/Music/background.mp3');
+
+// Game Music
 const gameMusic = [];
 gameMusic.push(new Audio('Assets/Music/drop.mp3'));
 gameMusic.push(new Audio('Assets/Music/block.mp3'));
 gameMusic.push(new Audio('Assets/Music/powerSound.mp3'));
+gameMusic.push(new Audio('Assets/Music/button.mp3'));
+gameMusic.push(new Audio('Assets/Music/victory1.mp3'));
+gameMusic.push(new Audio('Assets/Music/victory2.mp3'));
+gameMusic.push(new Audio('Assets/Music/draw.mp3'));
+
 const backGroundVolume = document.querySelector('#audioVolume');
 const gameVolume = document.querySelector('#gameAudioVolume');
-
 audio.checked = true;
 gameAudio.checked = true;
 
+// If Settings is Open
 let isSettings = true;
 
 
@@ -56,6 +83,7 @@ const gameOverText = document.querySelector('#game-over span');
 const replay = document.querySelector('#replay');
 
 let isReplaying = false;
+let query;
 
 // Theme
 let themeRowsColor = "";
@@ -64,10 +92,8 @@ let themeRowsColor = "";
 const rowButtons = document.querySelectorAll('.rows');
 const redUserInfo = document.querySelectorAll('.red');
 const yellowUserInfo = document.querySelectorAll('.yellow');
-const player1Name = "Red"
-const player2Name = "Yellow"
-document.querySelector('.name.red').innerText = player1Name;
-document.querySelector('.name.yellow').innerText = player2Name;
+redUserInfo[1].innerText = player1Name;
+yellowUserInfo[2].innerText = player2Name;
 
 // Board
 const columns = document.querySelectorAll('.columns');
@@ -98,7 +124,8 @@ let powersMapping = {
     "Block Remove" : 3,
     "Random Disc" : 4,
     "Add 15 Seconds" : 5,
-    "Lose 10 Seconds" : 6
+    "Lose 10 Seconds" : 6,
+    "Coin Defect" : 7
 }
 
 // Powers
@@ -106,7 +133,8 @@ let reversePowersMapping = {
      3 : "Block Remove",
      4 : "Random Disc" ,
      5 : "Add 15 Seconds",
-     6 : "Lose 10 Seconds"
+     6 : "Lose 10 Seconds",
+    7 : "Coin Defect"
 }
 
 // Swap Turns
@@ -145,7 +173,8 @@ computeWinningMoves();
 // Powers
 function givePowers() {
     let currentTime;
-    let powers = ["Block Remove", "Random Disc", 'Add 15 Seconds', 'Lose 10 Seconds']
+    let powers = ["Block Remove", "Block Remove", "Block Remove", "Random Disc", 'Add 15 Seconds', 'Add 15 Seconds',
+        'Lose 10 Seconds', 'Lose 10 Seconds', 'Coin Defect']
     let power = powers[Math.floor(Math.random() * powers.length)];
 
     if (gameAudio.checked) {
@@ -212,6 +241,15 @@ function givePowers() {
                 timerRed.innerText = `Time Left : ${currentTime}`;
             }
             break;
+
+        case "Coin Defect":
+            let discs = history.filter(log => log.slice(0, 2) === `${(turn === 2) ? 1 : 2}p`).map(log => log.slice(2, 12))
+            let defects = history.filter(log => log.slice(0, 2) === `3s`).map(log => log.slice(2, 12));
+            discs = discs.filter(disc => !defects.includes(disc));
+            query = discs[Math.floor(Math.random() * discs.length)];
+            let disc = document.querySelector(`#${query}`);
+            disc.style.backgroundColor = 'darkslategray';
+            history.push(`3s${disc.id}`);
     }
     return power;
 
@@ -220,9 +258,10 @@ function givePowers() {
 // Find the Blocked Column
 function findBlockedColumn() {
     let blockedColumns = history.filter(log => log[1] === 'b');
-    if (blockedColumns.length !== 0) {
+    if (blockedColumns.length !== 0 &&
+        history.filter(log => (log.length === 12 && log[log.length - 1] === '1' && log[1] === 'p')).map(log => log[6]).length !== 6) {
         if (history[history.length - 1][0] !== '3') {
-            let query = blockedColumns[blockedColumns.length - 1].slice(2, 7);
+            query = blockedColumns[blockedColumns.length - 1].slice(2, 7);
             return document.querySelector(`#${query}`);
         }
     }
@@ -233,7 +272,7 @@ function findBlockedColumn() {
 function placeBlock(column) {
     rows = Array.from(column.children).reverse();
     rows.forEach(row => {
-        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+        if (row.style.backgroundColor === themeRowsColor && row.style.backgroundColor !== 'darkslategray') {
             row.style.backgroundColor = "black";
         }
     })
@@ -256,7 +295,7 @@ function removeBlock() {
     try {
         rows = Array.from(column.children).reverse();
         rows.forEach(row => {
-            if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+            if (row.style.backgroundColor === "black") {
                 row.style.backgroundColor = themeRowsColor;
             }
         })
@@ -340,15 +379,29 @@ function isGameOver(winner) {
 
     if (winner && turn === 1) {
         gameOverText.innerText = `${player1Name} Wins`;
+        player1Score++;
+        localStorage.setItem('player1Score', player1Score);
+        gameMusic[4].play();
+        gameMusic[5].play();
     } else if (winner) {
         gameOverText.innerText = `${player2Name} Wins`;
+        player2Score++;
+        localStorage.setItem('player2Score', player2Score);
+        gameMusic[4].play();
+        gameMusic[5].play();
     }
     else {
         gameOverText.innerText = `Draw`;
+        gameMusic[6].play();
     }
 
-    replay.style.visibility = "visible";
-    replay.style.width = "30%";
+    player1ScoreDisplay.textContent = player1Score;
+    player2ScoreDisplay.textContent = player2Score;
+
+    player1NameInput.value = player1Name;
+    player2NameInput.value = player2Name;
+
+    replay.style.opacity = "1";
     replay.style.fontSize = "1.25rem";
 
 }
@@ -357,7 +410,8 @@ function isGameOver(winner) {
 function checkGameOver() {
     let moves = history.filter(log => log.slice(0, 2) === turn.toString() + 'p').map(log => log.slice(2, 12));
     let randomMoves = history.filter(log => log.slice(0, 2) === turn.toString() + 's').map(log => log.slice(2));
-    moves = moves.concat(randomMoves);
+    let noMoves = history.filter(log => log.slice(0, 2) ===  '3s').map(log => log.slice(2, 12));
+    moves = moves.concat(randomMoves).filter(move => !noMoves.includes(move));
     winningMoves.some(move => {
         if (move.every(pos => moves.includes(pos))) {
             isGameOver(turn);
@@ -378,7 +432,7 @@ function checkGameOver() {
 function onMouseClick(column, isPower) {
     rows = Array.from(column.children).reverse();
     rows.some(row => {
-        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow && row.style.backgroundColor !== "darkslategray") {
             row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
             row.style.backgroundColor = players[turn];
             row.style.border = "double 0.5rem";
@@ -415,8 +469,8 @@ function clearBoard() {
     yellowPowerImg.style.opacity = '0';
     powersYellow.innerText = "";
     powersRed.innerText = "";
-    timerRed.innerText = "Time Left : 3:00:0";
-    timerYellow.innerText = "Time Left : 3:00:0";
+    timerRed.innerText = `Time Left : ${startTime}`;
+    timerYellow.innerText = `Time Left : ${startTime}`;
 }
 
 // Change Theme
@@ -463,7 +517,8 @@ function themeChange(logs) {
 
     rowButtons.forEach(button => {
         if (button.parentElement !== findBlockedColumn() || !isPlay) {
-            if (button.style.backgroundColor !== 'red' && button.style.backgroundColor !== 'yellow' && button.style.backgroundColor !== 'black') {
+            if (button.style.backgroundColor !== 'red' && button.style.backgroundColor !== 'yellow' &&
+                button.style.backgroundColor !== 'black' && button.style.backgroundColor !== 'darkslategray') {
                 button.style.transition = 'background-color 0.5s ease-in, border 0.2s ease-in'
                 button.style.backgroundColor = themeRowsColor;
             }
@@ -476,9 +531,9 @@ function themeChange(logs) {
 
     logs.filter(log => log[1] !== 'b' && log.length === 12).forEach(move => {
         let disc = document.querySelector(`#${move.slice(2, 12)}`);
-        if (move[0] === '1') {
+        if (move[0] === '1' && disc.style.backgroundColor !== 'darkslategray') {
             disc.style.backgroundColor = red;
-        } else {
+        } else if (disc.style.backgroundColor !== 'darkslategray') {
             disc.style.backgroundColor = yellow;
         }
     });
@@ -486,37 +541,91 @@ function themeChange(logs) {
     yellowUserInfo.forEach(element => {
         element.style.backgroundColor = yellow;
     });
+
+    player2NameInput.style.backgroundColor = themeRowsColor;
+    player1NameInput.style.backgroundColor = themeRowsColor;
 }
+
+// Player Name Changes
+function setPlayerNames() {
+    player1Name = player1NameInput.value;
+    player2Name = player2NameInput.value;
+    document.querySelector('.name.red').innerText = player1Name;
+    document.querySelector('.name.yellow').innerText = player2Name;
+}
+
+// Restart
+function Restart() {
+    clearBoard();
+    history = [];
+    isReplaying = false;
+    isFinished = true;
+    isPlay = true;
+    if (firstTurn === 1) {
+        firstTurn = 2;
+    }
+    else {
+        firstTurn = 1;
+    }
+    turn = firstTurn;
+    gameOverText.innerText = "";
+    start.disabled = false;
+    start.style.opacity = '1';
+    undo.disabled = true;
+    gameOver.style.width = "25%";
+    gameOver.style.height = "80%";
+    replay.style.opacity = "0";
+    redPowerImg.backgroundImage = "Battle 4.png";
+    yellowPowerImg.backgroundImage = "Battle 4.png";
+    redPowerImg.style.opacity = "0";
+    yellowPowerImg.style.opacity = "0";
+    player1NameInput.style.opacity = "1";
+    player2NameInput.style.opacity = "1";
+    player1NameInput.disabled = false;
+    player2NameInput.disabled = false;
+    setPlayerNames();
+}
+
+function buttonSound() {
+    if (gameAudio.checked) {
+        gameMusic[3].play();
+    }
+}
+
+// Game
+columns.forEach(column => {
+    column.addEventListener('mouseenter', () => {
+        onMouseEnter(column);
+    });
+    column.addEventListener('mouseleave', () => {
+        onMouseLeave(column);
+
+    })
+    column.addEventListener('click', () => {
+        if (!isFinished &&
+            !history.filter(log => (log.length === 12 && log[log.length - 1] === '1' && log[1] === 'p')).map(log => log.slice(2, 7)).includes(column.id)
+        ) {
+            if (isPlay && column !== findBlockedColumn()) {
+                history.push((turn === 1) ? `${timerRed.innerText.slice(12)}` : `${timerYellow.innerText.slice(12)}`);
+                onMouseClick(column, false);
+                removeBlock();
+            } else if (!isPlay) {
+                placeBlock(column);
+            }
+        }
+    })
+})
 
 // Changing if not Replaying
 changeTheme.addEventListener('click', () => {
+    gameMusic[3].play();
     if (!isReplaying) {
         themeChange(history);
     }
 });
 
-// Game
-columns.forEach(column => {
-        column.addEventListener('mouseenter', () => {
-            onMouseEnter(column);
-        });
-        column.addEventListener('mouseleave', () => {
-            onMouseLeave(column);
-
-        })
-        column.addEventListener('click', () => {
-            if (!isFinished) {
-                if (isPlay && column !== findBlockedColumn()) {
-                    onMouseClick(column, false);
-                    removeBlock();
-                } else if (!isPlay) {
-                    placeBlock(column);
-                }
-            }
-        })
-})
-
 undo.addEventListener('click', () => {
+    buttonSound()
     if (!isFinished) {
         if (history.length > 0) {
             let move = history[history.length - 1];
@@ -529,7 +638,7 @@ undo.addEventListener('click', () => {
                 }
 
                 let power;
-                let powerIndex = move[0] === '4' ? history.length - 5 : history.length - 4;
+                let powerIndex = (move[0] === '4' || move[0] === '7') ? history.length - 6 : history.length - 5;
                 try {
                     power = reversePowersMapping[Number.parseInt(history[powerIndex][0])];
                 } catch (error) {
@@ -578,31 +687,46 @@ undo.addEventListener('click', () => {
                         let new_time = timer(timerYellow.innerText.slice(12), -200);
                         timerYellow.innerText = "Time Left : " + new_time;
                     }
+                } else if (move[0] === '7') {
+                    history.pop();
+                    let disc = document.querySelector(`#${history[history.length - 1].slice(2)}`);
+                    disc.style.transition = "background-color 0.2s ease-in, border 0.2s ease-in"
+                    disc.style.backgroundColor = players[(turn === 1) ? 2 : 1];
+                    history.pop()
+                    removeBlock();
                 }
 
                 isPlay = false;
                 turnSwap();
             } else if (move.length === 12) {
+
                 let disc = document.querySelector(`#${move.slice(2, 12)}`);
                 disc.style.backgroundColor = themeRowsColor;
                 disc.style.border = "black 0.2rem solid";
 
                 try {
                     let blockedColumns = history.filter(log => log[1] === 'b');
-                    let query = blockedColumns[blockedColumns.length - 1].slice(2, 7);
+                    query = blockedColumns[blockedColumns.length - 1].slice(2, 7);
                     let column = document.querySelector(`#${query}`);
                     let allPowers = history.filter(log => log.length === 7)
                     if (allPowers[allPowers.length - 1][0] !== '3') {
                         rows = Array.from(column.children).reverse();
                         rows.forEach(row => {
-                            if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+                            if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow &&
+                                row.style.backgroundColor !== "darkslategray") {
                                 row.style.backgroundColor = "black";
                             }
                         })
                     }
                 }
                 catch (e) {
-                    console.error("No Columns Blocked");
+                    console.error("No Columns to Block");
+                }
+                history.pop();
+                if (turn === 1) {
+                    timerRed.innerText = "Time Left : " + history[history.length - 1];
+                } else {
+                    timerYellow.innerText = "Time Left : " + history[history.length - 1];
                 }
 
                 isPlay = true;
@@ -645,6 +769,23 @@ setInterval(() => {
         isSettings = false;
     }
 
+    if (!isPlay &&
+        history.filter(log => (log.length === 12 && log[log.length - 1] === '1' && log[1] === 'p')).map(log => log[6]).length === 6) {
+        isPlay = true;
+        turnSwap();
+        let columnsFilled =
+            history.filter(log => (log.length === 12 && log[log.length - 1] === '1' && log[1] === 'p')).map(log => log.slice(2, 7))
+        let query = ['col-1', 'col-2', 'col-3', 'col-4', 'col-5', 'col-6', 'col-7'].filter(column => !columnsFilled.includes(column))[0];
+        let column = document.querySelector(`#${query}`);
+        rows = Array.from(column.children).reverse();
+        console.log(rows)
+        rows.forEach(row => {
+            if (row.style.backgroundColor === "black") {
+                row.style.backgroundColor = themeRowsColor;
+            }
+        })
+    }
+
     try {
         if (audio.checked) {
             backGroundMusic.play();
@@ -667,9 +808,9 @@ setInterval(() => {
         if (history.length === 0) {
             turn = firstTurn;
             isPlay = true;
-            timerRed.innerText = "Time Left : 3:00:0";
-            timerYellow.innerText = "Time Left : 3:00:0";
-            history.push(`${powersMapping[givePowers()]}3:00:0`);
+            timerRed.innerText = `Time Left : ${startTime}`;
+            timerYellow.innerText = `Time Left : ${startTime}`;
+            history.push(`${powersMapping[givePowers()]}${startTime}`);
             if (turn === 1) {
                 gameOverText.textContent = `${player1Name} Turn`;
             } else {
@@ -721,6 +862,7 @@ setInterval(() => {
 }, 100);
 
 replay.addEventListener('click', () => {
+    buttonSound()
     if(!isReplaying) {
         isReplaying = true;
         clearBoard();
@@ -757,9 +899,9 @@ replay.addEventListener('click', () => {
                     }
 
                     try {
-                        let nextLog = history[logIndex + 3];
+                        let nextLog = history[logIndex + 4];
                         if (nextLog[1] === 's') {
-                            nextLog = history[logIndex + 4];
+                            nextLog = history[logIndex + 5];
                         }
                         if (turn === 2) {
                             timerRed.innerText = "Time Left : " + nextLog.slice(1);
@@ -772,7 +914,7 @@ replay.addEventListener('click', () => {
 
                     if (log[0] === "3" && logIndex > 1) {
                         let currentHistory = history.slice(0, logIndex).filter(log => log[1] === 'b');
-                        let query = currentHistory[currentHistory.length - 1].slice(2, 7);
+                        query = currentHistory[currentHistory.length - 1].slice(2, 7);
                         column = document.querySelector(`#${query}`)
                         rows = Array.from(column.children).reverse();
                         rows.forEach(row => {
@@ -783,7 +925,7 @@ replay.addEventListener('click', () => {
                         blockedColumn = null;
                     } else if (log[0] === "4") {
                         let currentHistory = history.slice(0, logIndex);
-                        let query = currentHistory[currentHistory.length - 1].slice(2);
+                        query = currentHistory[currentHistory.length - 1].slice(2);
                         let disc = document.querySelector(`#${query}`);
                         disc.style.transition = "background-color 0.2s ease-in, border 0.2s ease-in";
                         disc.style.backgroundColor = players[turn];
@@ -818,14 +960,30 @@ replay.addEventListener('click', () => {
                             timerRed.innerText = `Time Left : ${currentTime}`;
                         }
 
+                    } else if (log[0] === "7") {
+                        let currentHistory = history.slice(0, logIndex);
+                        query = currentHistory[currentHistory.length - 1].slice(2);
+                        let disc = document.querySelector(`#${query}`);
+                        disc.style.transition = "background-color 0.2s ease-in, border 0.2s ease-in";
+                        disc.style.backgroundColor ="darkslategray";
+                        disc.style.border = "double 0.5rem";
                     }
 
-                } else if (log[1] === 'p') {
-                    let query = log.slice(2, 7);
+                } else if (log.length === 6) {
+
+                    if (turn === 1) {
+                        timerRed.innerText = "Time Left : " + log;
+                    } else {
+                        timerYellow.innerText = "Time Left : " + log;
+                    }
+                    logIndex++;
+                    log = history[logIndex];
+                    query = log.slice(2, 7);
                     column = document.querySelector(`#${query}`);
                     rows = Array.from(column.children).reverse();
                     rows.some(row => {
-                        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+                        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow
+                        && row.style.backgroundColor !== "darkslategray") {
                             row.style.transition = 'background-color 0.2s ease-in, border 0.2s ease-in';
                             row.style.backgroundColor = players[turn];
                             row.style.border = "double 0.5rem";
@@ -840,7 +998,8 @@ replay.addEventListener('click', () => {
                     try {
                         rows = Array.from(blockedColumn.children).reverse();
                         rows.forEach(row => {
-                            if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+                            if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow
+                            && row.style.backgroundColor !== "darkslategray") {
                                 row.style.backgroundColor = themeRowsColor;
                             }
                         })
@@ -848,11 +1007,12 @@ replay.addEventListener('click', () => {
                         console.error("No Column Found");
                     }
                 } else if (log[1] === 'b') {
-                    let query = log.slice(2, 7);
+                    query = log.slice(2, 7);
                     column = document.querySelector(`#${query}`);
                     rows = Array.from(column.children).reverse();
                     rows.forEach(row => {
-                        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow) {
+                        if (row.style.backgroundColor !== red && row.style.backgroundColor !== yellow
+                            && row.style.backgroundColor !== "darkslategray") {
                             row.style.backgroundColor = "black";
                         }
                     })
@@ -890,33 +1050,33 @@ replay.addEventListener('click', () => {
     }
 })
 
-function Restart() {
-    clearBoard();
-    history = [];
-    isReplaying = false;
-    isFinished = true;
-    isPlay = true;
-    if (firstTurn === 1) {
-        firstTurn = 2;
-    }
-    else {
-        firstTurn = 1;
-    }
-    turn = firstTurn;
-    gameOverText.innerText = "";
-    start.disabled = false;
-    start.style.visibility = "visible";
-    undo.disabled = true;
-    gameOver.style.width = "25%";
-    gameOver.style.height = "45%";
-    replay.style.visibility = "hidden";
-    replay.style.width = "0%";
-    redPowerImg.backgroundImage = "Battle 4.png";
-    yellowPowerImg.backgroundImage = "Battle 4.png";
-    redPowerImg.style.opacity = "0";
-    yellowPowerImg.style.opacity = "0";
-}
+start.addEventListener('click', () => {
+    buttonSound()
+    isFinished = false;
+    // Start Button
+    start.disabled = true;
+    start.style.opacity = '0';
+    undo.disabled = false;
+    player1NameInput.style.opacity = "0";
+    player2NameInput.style.opacity = "0";
+    player1NameInput.disabled = true;
+    player2NameInput.disabled = true;
+    redUserInfo[1].innerText = player1Name;
+    yellowUserInfo[2].innerText = player2Name;
+    setPlayerNames();
+})
 
 restart.addEventListener("click", () => {
+    buttonSound()
     Restart();
+})
+
+reset.addEventListener("click", () => {
+    buttonSound()
+    player1Score = 0;
+    player2Score = 0;
+    player1ScoreDisplay.innerText = player1Score;
+    player2ScoreDisplay.innerText = player2Score;
+    localStorage.setItem("player1Score", player1Score);
+    localStorage.setItem("player2Score", player2Score);
 })

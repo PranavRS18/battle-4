@@ -26,6 +26,7 @@
                     <br>
                     <label for = "gameAudioVolume" class = "text">Volume</label>
                     <input type = "range" id = "gameAudioVolume" class = "volume" min = "0" max = "100" step = "1" value = "50">
+                    <button id = "reset">Reset Score</button>
                 </div>
             </div>
 
@@ -35,7 +36,9 @@
         <!-- Undo -->
         <div class = "container" id = "actionbar">
             <button class = "actions" id = "restart">Restart</button>
+            <input type = "text" id = "player1Name" class = "playerName">
             <button class = "actions" id = "start">Start Game</button>
+            <input type = "text" id = "player2Name" class = "playerName">
             <button class = "actions" id = "undo">Undo</button>
         </div>
 
@@ -43,18 +46,22 @@
         <div class = "container" id = "players">
             <div class = "user-info red">
                 <span class = "name red">Player 1 Name</span>
-                <span class = "time red">Time Left : 3:00:0</span>
+                <span class = "time red">Time Left : 0:00:0</span>
             </div>
 
             <!-- Events -->
             <div id = "game-over">
                 <span></span>
-                <button id = "replay">Replay</button>
+                <div>
+                    <h3 class = "score red">0</h3>
+                    <button id = "replay"><h4>Replay</h4></button>
+                    <h3 class = "score yellow">0</h3>
+                </div>
             </div>
 
             <div class = "user-info yellow">
                 <span class = "name yellow">Player 2 Name</span>
-                <span class = "time yellow">Time Left : 3:00:0</span>
+                <span class = "time yellow">Time Left : 0:00:0</span>
             </div>
         </div>
 

@@ -27,3 +27,11 @@
 
 ## v4.2
 * Minor Bug Fixes
+
+## v5.0
+* Added Disc Defect Powerup
+* Added Local Storage to Store Names and Score
+* Added Reset Score
+* Added Button, Victory and Draw Sounds
+* Made Abrupt Animations more Smooth
+* Minor Bug Fixes 
